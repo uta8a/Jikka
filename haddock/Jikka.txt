@@ -7,229 +7,7 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/kmyk/Jikka</a>
 @package Jikka
-@version 5.1.0.0
-
-
--- | <a>Expr</a> module has the basic data types for C++ language. The data
---   types are intended to use for the code generation.
-module Jikka.CPlusPlus.Language.Expr
-newtype VarName
-VarName :: String -> VarName
-[unVarName] :: VarName -> String
-newtype FunName
-FunName :: String -> FunName
-[unFunName] :: FunName -> String
-data Type
-TyAuto :: Type
-TyVoid :: Type
-TyBool :: Type
-TyInt :: Type
-TyInt32 :: Type
-TyInt64 :: Type
-TyTuple :: [Type] -> Type
-TyVector :: Type -> Type
-TyArray :: Type -> Integer -> Type
-TyString :: Type
-TyFunction :: Type -> [Type] -> Type
-TyConvexHullTrick :: Type
-TySegmentTree :: Monoid' -> Type
-
--- | for template parameters
-TyIntValue :: Integer -> Type
-data Monoid'
-MonoidIntPlus :: Monoid'
-MonoidIntMin :: Monoid'
-MonoidIntMax :: Monoid'
-data Literal
-LitInt32 :: Integer -> Literal
-LitInt64 :: Integer -> Literal
-LitBool :: Bool -> Literal
-LitChar :: Char -> Literal
-LitString :: String -> Literal
-data Function
-Function :: FunName -> [Type] -> Function
-Method :: FunName -> Function
-At :: Function
-Cast :: Type -> Function
-StdTuple :: [Type] -> Function
-StdGet :: Integer -> Function
-ArrayExt :: Type -> Function
-VecExt :: Type -> Function
-VecCtor :: Type -> Function
-Range :: Function
-MethodSize :: Function
-ConvexHullTrickCtor :: Function
-ConvexHullTrickCopyAddLine :: Function
-SegmentTreeCtor :: Monoid' -> Function
-SegmentTreeCopySetPoint :: Monoid' -> Function
-data UnaryOp
-IntNop :: UnaryOp
-Negate :: UnaryOp
-BitNot :: UnaryOp
-Not :: UnaryOp
-Deref :: UnaryOp
-data BinaryOp
-Add :: BinaryOp
-Sub :: BinaryOp
-Mul :: BinaryOp
-Div :: BinaryOp
-Mod :: BinaryOp
-BitAnd :: BinaryOp
-BitOr :: BinaryOp
-BitXor :: BinaryOp
-BitLeftShift :: BinaryOp
-BitRightShift :: BinaryOp
-And :: BinaryOp
-Or :: BinaryOp
-LessThan :: BinaryOp
-LessEqual :: BinaryOp
-GreaterThan :: BinaryOp
-GreaterEqual :: BinaryOp
-Equal :: BinaryOp
-NotEqual :: BinaryOp
-data AssignOp
-SimpleAssign :: AssignOp
-AddAssign :: AssignOp
-SubAssign :: AssignOp
-MulAssign :: AssignOp
-DivAssign :: AssignOp
-ModAssign :: AssignOp
-BitLeftShiftAssign :: AssignOp
-BitRightShiftAssign :: AssignOp
-BitAndAssign :: AssignOp
-BitOrAssign :: AssignOp
-BitXorAssign :: AssignOp
-data Expr
-Var :: VarName -> Expr
-Lit :: Literal -> Expr
-UnOp :: UnaryOp -> Expr -> Expr
-BinOp :: BinaryOp -> Expr -> Expr -> Expr
-Cond :: Expr -> Expr -> Expr -> Expr
-Lam :: [(Type, VarName)] -> Type -> [Statement] -> Expr
-Call :: Function -> [Expr] -> Expr
-CallExpr :: Expr -> [Expr] -> Expr
-data LeftExpr
-LeftVar :: VarName -> LeftExpr
-LeftAt :: LeftExpr -> Expr -> LeftExpr
-
--- | <pre>
---   std::get<a>n</a>
---   </pre>
-LeftGet :: Integer -> LeftExpr -> LeftExpr
-data AssignExpr
-AssignExpr :: AssignOp -> LeftExpr -> Expr -> AssignExpr
-AssignIncr :: LeftExpr -> AssignExpr
-AssignDecr :: LeftExpr -> AssignExpr
-data DeclareRight
-DeclareDefault :: DeclareRight
-DeclareCopy :: Expr -> DeclareRight
-
--- | This is only for better formatting. This should not be used while
---   optimization phases.
-DeclareInitialize :: [Expr] -> DeclareRight
-data Statement
-ExprStatement :: Expr -> Statement
-Block :: [Statement] -> Statement
-If :: Expr -> [Statement] -> Maybe [Statement] -> Statement
-For :: Type -> VarName -> Expr -> Expr -> AssignExpr -> [Statement] -> Statement
-ForEach :: Type -> VarName -> Expr -> [Statement] -> Statement
-While :: Expr -> [Statement] -> Statement
-Declare :: Type -> VarName -> DeclareRight -> Statement
-DeclareDestructure :: [VarName] -> Expr -> Statement
-Assign :: AssignExpr -> Statement
-Assert :: Expr -> Statement
-Return :: Expr -> Statement
-data ToplevelStatement
-VarDef :: Type -> VarName -> Expr -> ToplevelStatement
-FunDef :: Type -> VarName -> [(Type, VarName)] -> [Statement] -> ToplevelStatement
-newtype Program
-Program :: [ToplevelStatement] -> Program
-[decls] :: Program -> [ToplevelStatement]
-instance Data.String.IsString Jikka.CPlusPlus.Language.Expr.VarName
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.VarName
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.VarName
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.VarName
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.VarName
-instance Data.String.IsString Jikka.CPlusPlus.Language.Expr.FunName
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.FunName
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.FunName
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.FunName
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.FunName
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Monoid'
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Monoid'
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Monoid'
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Monoid'
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Type
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Type
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Type
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Type
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Literal
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Literal
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Literal
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Literal
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Function
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Function
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Function
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Function
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.UnaryOp
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.UnaryOp
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.UnaryOp
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.UnaryOp
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.BinaryOp
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.BinaryOp
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.BinaryOp
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.BinaryOp
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.AssignOp
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.AssignOp
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.AssignOp
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.AssignOp
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.LeftExpr
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.LeftExpr
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.LeftExpr
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.LeftExpr
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.AssignExpr
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.AssignExpr
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.AssignExpr
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.AssignExpr
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Expr
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Expr
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Expr
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Expr
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.DeclareRight
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.DeclareRight
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.DeclareRight
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.DeclareRight
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Statement
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Statement
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Statement
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Statement
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.ToplevelStatement
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.ToplevelStatement
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.ToplevelStatement
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.ToplevelStatement
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Program
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Program
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Program
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Program
-
-module Jikka.CPlusPlus.Language.VariableAnalysis
-data ReadWriteList
-ReadWriteList :: Set VarName -> Set VarName -> ReadWriteList
-[readList'] :: ReadWriteList -> Set VarName
-[writeList] :: ReadWriteList -> Set VarName
-readVariable :: VarName -> ReadWriteList
-writeVariable :: VarName -> ReadWriteList
-analyzeExpr :: Expr -> ReadWriteList
-analyzeLeftExpr :: LeftExpr -> ReadWriteList
-analyzeAssignExpr :: AssignExpr -> ReadWriteList
-analyzeStatement :: Statement -> ReadWriteList
-analyzeStatements :: [Statement] -> ReadWriteList
-instance GHC.Read.Read Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
-instance GHC.Show.Show Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
-instance GHC.Base.Semigroup Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
-instance GHC.Base.Monoid Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
+@version 5.6.0.0
 
 
 -- | <a>Alpha</a> provides a monad to run alpha-conversion. This monad has
@@ -259,57 +37,6 @@ instance (Jikka.Common.Alpha.MonadAlpha m, GHC.Base.Monoid w) => Jikka.Common.Al
 instance Jikka.Common.Alpha.MonadAlpha GHC.Types.IO
 instance Jikka.Common.Alpha.MonadAlpha Language.Haskell.TH.Syntax.Q
 
-module Jikka.CPlusPlus.Language.Util
-fromLeftExpr :: LeftExpr -> Expr
-data NameKind
-LocalNameKind :: NameKind
-LocalArgumentNameKind :: NameKind
-LoopCounterNameKind :: NameKind
-ConstantNameKind :: NameKind
-FunctionNameKind :: NameKind
-ArgumentNameKind :: NameKind
-fromNameKind :: NameKind -> String
-newFreshName :: MonadAlpha m => NameKind -> m VarName
-renameVarName :: MonadAlpha m => NameKind -> String -> m VarName
-freeVars :: Expr -> Set VarName
-freeVarsStatements :: [Statement] -> Set VarName
-freeVarsStatement :: Statement -> Set VarName
-freeVarsDeclareRight :: DeclareRight -> Set VarName
-freeVarsAssignExpr :: AssignExpr -> Set VarName
-freeVarsLeftExpr :: LeftExpr -> Set VarName
-shouldBeArray :: [Type] -> Bool
-cinStatement :: Expr -> Statement
-coutStatement :: Expr -> Statement
-repStatement :: VarName -> Expr -> [Statement] -> Statement
-litInt64 :: Integer -> Expr
-litInt32 :: Integer -> Expr
-incrExpr :: Expr -> Expr
-size :: Expr -> Expr
-at :: Expr -> Expr -> Expr
-cast :: Type -> Expr -> Expr
-assignSimple :: VarName -> Expr -> Statement
-assignAt :: VarName -> Expr -> Expr -> Statement
-callFunction :: FunName -> [Type] -> [Expr] -> Expr
-callFunction' :: FunName -> [Type] -> [Expr] -> Statement
-callMethod :: Expr -> FunName -> [Expr] -> Expr
-callMethod' :: Expr -> FunName -> [Expr] -> Statement
-vecCtor :: Type -> [Expr] -> Expr
-begin :: Expr -> Expr
-end :: Expr -> Expr
-mapExprStatementExprM :: Monad m => (Expr -> m Expr) -> (Statement -> m Statement) -> Expr -> m Expr
-mapExprStatementLeftExprM :: Monad m => (Expr -> m Expr) -> (Statement -> m Statement) -> LeftExpr -> m LeftExpr
-mapExprStatementAssignExprM :: Monad m => (Expr -> m Expr) -> (Statement -> m Statement) -> AssignExpr -> m AssignExpr
-mapExprStatementStatementM :: Monad m => (Expr -> m Expr) -> (Statement -> m Statement) -> Statement -> m Statement
-mapExprStatementToplevelStatementM :: Monad m => (Expr -> m Expr) -> (Statement -> m Statement) -> ToplevelStatement -> m ToplevelStatement
-mapExprStatementProgramM :: Monad m => (Expr -> m Expr) -> (Statement -> m Statement) -> Program -> m Program
-mapExprStatementProgram :: (Expr -> Expr) -> (Statement -> Statement) -> Program -> Program
-replaceExpr :: VarName -> Expr -> Expr -> Expr
-replaceStatement :: VarName -> Expr -> Statement -> Statement
-instance GHC.Read.Read Jikka.CPlusPlus.Language.Util.NameKind
-instance GHC.Show.Show Jikka.CPlusPlus.Language.Util.NameKind
-instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Util.NameKind
-instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Util.NameKind
-
 module Jikka.Common.Combinatorics
 fact :: Integral a => a -> a
 choose :: Integral a => a -> a -> a
@@ -337,24 +64,6 @@ dedent :: String
 makeIndentFromMarkers :: Int -> [String] -> [String]
 makeIndentFromBraces :: Int -> [String] -> [String]
 insertIndentDedentFromBraces :: [String] -> [String]
-
-
--- | <a>Format</a> module converts the AST for C++ to the plain source
---   code.
-module Jikka.CPlusPlus.Format
-run :: Applicative m => Program -> m Text
-run' :: Program -> String
-type Code = String
-formatExpr :: Expr -> (Code, Prec)
-formatType :: Type -> Code
-instance GHC.Read.Read Jikka.CPlusPlus.Format.Prec
-instance GHC.Show.Show Jikka.CPlusPlus.Format.Prec
-instance GHC.Classes.Ord Jikka.CPlusPlus.Format.Prec
-instance GHC.Classes.Eq Jikka.CPlusPlus.Format.Prec
-instance GHC.Read.Read Jikka.CPlusPlus.Format.Assoc
-instance GHC.Show.Show Jikka.CPlusPlus.Format.Assoc
-instance GHC.Classes.Ord Jikka.CPlusPlus.Format.Assoc
-instance GHC.Classes.Eq Jikka.CPlusPlus.Format.Assoc
 
 module Jikka.Common.Format.Color
 data ColorFlag
@@ -497,6 +206,7 @@ wrapAt :: MonadError Error m => Loc -> m a -> m a
 wrapAt' :: MonadError Error m => Maybe Loc -> m a -> m a
 maybeToError :: MonadError a m => a -> Maybe b -> m b
 eitherToError :: MonadError a m => Either a b -> m b
+fromSuccess :: Either Error a -> a
 
 -- | <a>catchError</a>` is the inverse of <tt>liftError</tt>.
 catchError' :: MonadError e m => m a -> m (Either e a)
@@ -589,7 +299,7 @@ formatIOFormat :: IOFormat -> String
 packSubscriptedVar :: String -> [String] -> FormatExpr
 packSubscriptedVar' :: String -> [String] -> FormatTree
 unpackSubscriptedVar :: MonadError Error m => FormatExpr -> m (String, [String])
-makeReadValueIO :: (MonadError Error m, MonadIO m) => (value -> m Integer) -> (Integer -> value) -> (value -> m (Vector value)) -> (Vector value -> value) -> IOFormat -> m ([value], Map String value)
+makeReadValueIO :: forall m value. (MonadError Error m, MonadIO m) => (value -> m Integer) -> (Integer -> value) -> (value -> m (Vector value)) -> (Vector value -> value) -> IOFormat -> m ([value], Map String value)
 makeWriteValueIO :: (MonadError Error m, MonadIO m) => (value -> m [value]) -> (Integer -> value) -> (value -> m Integer) -> (value -> m (Vector value)) -> IOFormat -> Map String value -> value -> m ()
 instance GHC.Show.Show Jikka.Common.IOFormat.FormatExpr
 instance GHC.Read.Read Jikka.Common.IOFormat.FormatExpr
@@ -611,6 +321,704 @@ prettyErrorWithText :: ColorFlag -> Text -> Error -> [String]
 hPrintError :: Handle -> Error -> IO ()
 hPrintErrorWithText :: Handle -> Text -> Error -> IO ()
 
+module Jikka.Common.Matrix
+
+-- | <a>Matrix</a> is data for matrices. It is guaranteed that internal
+--   arrays are not jagged arrays.
+data Matrix a
+unMatrix :: Matrix a -> Vector (Vector a)
+makeMatrix :: Vector (Vector a) -> Maybe (Matrix a)
+makeMatrix' :: Vector (Vector a) -> Matrix a
+
+-- | <a>matsize</a> computes the size of a matrix.
+matsize :: Matrix a -> (Int, Int)
+
+-- | <a>matsize</a>` computes the size of a matrix. This assumes inputs are
+--   matrices (<a>matcheck</a>).
+matsize' :: Vector (Vector a) -> (Int, Int)
+
+-- | <a>matcheck</a> checks a given vector of vectors is a matrix. That is,
+--   this returns <a>False</a> for jagged arrays.
+matcheck :: Vector (Vector a) -> Bool
+matzero :: Num a => Int -> Int -> Matrix a
+matone :: Num a => Int -> Matrix a
+
+-- | <a>matadd</a> calculates the addition &lt;math&gt; of two matrices
+--   &lt;math&gt;. This assumes sizes of inputs match.
+matadd :: Num a => Matrix a -> Matrix a -> Matrix a
+
+-- | <a>matmul</a> calculates the multiplication &lt;math&gt;of two
+--   matrices &lt;math&gt;. This assumes sizes of inputs match.
+matmul :: Num a => Matrix a -> Matrix a -> Matrix a
+
+-- | <a>matap</a> calculates the multiplication &lt;math&gt; of a matrix
+--   &lt;math&gt; and a vector &lt;math&gt;. This assumes sizes of inputs
+--   match.
+matap :: Num a => Matrix a -> Vector a -> Vector a
+matscalar :: Num a => a -> Matrix a -> Matrix a
+
+-- | <a>matpow</a> calculates the power &lt;math&gt; of a matrix
+--   &lt;math&gt; and a natural number &lt;math&gt;. This assumes inputs
+--   are square matrices. This fails for &lt;math&gt;.
+matpow :: (Show a, Num a) => Matrix a -> Integer -> Matrix a
+instance GHC.Base.Functor Jikka.Common.Matrix.Matrix
+instance GHC.Show.Show a => GHC.Show.Show (Jikka.Common.Matrix.Matrix a)
+instance GHC.Classes.Ord a => GHC.Classes.Ord (Jikka.Common.Matrix.Matrix a)
+instance GHC.Classes.Eq a => GHC.Classes.Eq (Jikka.Common.Matrix.Matrix a)
+
+module Jikka.Common.ModInt
+data ModInt
+toModInt :: Integer -> Integer -> ModInt
+fromModInt :: ModInt -> Integer
+moduloOfModInt :: ModInt -> Maybe Integer
+instance GHC.Show.Show Jikka.Common.ModInt.ModInt
+instance GHC.Read.Read Jikka.Common.ModInt.ModInt
+instance GHC.Classes.Ord Jikka.Common.ModInt.ModInt
+instance GHC.Classes.Eq Jikka.Common.ModInt.ModInt
+instance GHC.Num.Num Jikka.Common.ModInt.ModInt
+
+module Jikka.Common.Name
+type OccName = Maybe String
+type NameFlavour = Maybe Int
+toFlavouredName :: String -> (OccName, NameFlavour)
+formatFlavouredName :: OccName -> NameFlavour -> String
+data NameHint
+LocalNameHint :: NameHint
+LocalArgumentNameHint :: NameHint
+LoopCounterNameHint :: NameHint
+ConstantNameHint :: NameHint
+FunctionNameHint :: NameHint
+ArgumentNameHint :: NameHint
+AdHocNameHint :: String -> NameHint
+instance GHC.Read.Read Jikka.Common.Name.NameHint
+instance GHC.Show.Show Jikka.Common.Name.NameHint
+instance GHC.Classes.Ord Jikka.Common.Name.NameHint
+instance GHC.Classes.Eq Jikka.Common.Name.NameHint
+
+
+-- | <a>Expr</a> module has the basic data types for C++ language. The data
+--   types are intended to use for the code generation.
+module Jikka.CPlusPlus.Language.Expr
+data VarName
+VarName :: OccName -> NameFlavour -> Maybe NameHint -> VarName
+formatVarName :: VarName -> String
+newtype FunName
+FunName :: String -> FunName
+formatFunName :: FunName -> String
+data Type
+
+-- | <pre>
+--   auto
+--   </pre>
+TyAuto :: Type
+
+-- | <pre>
+--   void
+--   </pre>
+TyVoid :: Type
+
+-- | <pre>
+--   bool
+--   </pre>
+TyBool :: Type
+
+-- | <pre>
+--   int
+--   </pre>
+TyInt :: Type
+
+-- | <pre>
+--   int32_t
+--   </pre>
+TyInt32 :: Type
+
+-- | <pre>
+--   int64_t
+--   </pre>
+TyInt64 :: Type
+
+-- | <pre>
+--   std::tuple&lt;T1, T2, ...&gt;
+--   </pre>
+TyTuple :: [Type] -> Type
+
+-- | <pre>
+--   std::vector&lt;T&gt;
+--   </pre>
+TyVector :: Type -> Type
+
+-- | <pre>
+--   std::arrya&lt;T, n&gt;
+--   </pre>
+TyArray :: Type -> Integer -> Type
+
+-- | <pre>
+--   std::string
+--   </pre>
+TyString :: Type
+
+-- | <pre>
+--   std::function&lt;Tr (T1, T2, ...)&gt;
+--   </pre>
+TyFunction :: Type -> [Type] -> Type
+
+-- | <pre>
+--   jikka::convex_hull_trick
+--   </pre>
+TyConvexHullTrick :: Type
+
+-- | <pre>
+--   atcoder::segtree&lt;T, op, e&gt;
+--   </pre>
+TySegmentTree :: Monoid' -> Type
+
+-- | an integer <tt>n</tt> for template parameters
+TyIntValue :: Integer -> Type
+data Monoid'
+
+-- | &lt;math&gt;
+MonoidIntPlus :: Monoid'
+
+-- | &lt;math&gt;
+MonoidIntMin :: Monoid'
+
+-- | &lt;math&gt;
+MonoidIntMax :: Monoid'
+
+-- | &lt;math&gt;
+MonoidIntGcd :: Monoid'
+
+-- | &lt;math&gt;
+MonoidIntLcm :: Monoid'
+data Literal
+LitInt32 :: Integer -> Literal
+LitInt64 :: Integer -> Literal
+LitBool :: Bool -> Literal
+LitChar :: Char -> Literal
+LitString :: String -> Literal
+data Function
+
+-- | other functions
+Function :: FunName -> [Type] -> Function
+
+-- | other methods
+Method :: FunName -> Function
+
+-- | subscription <tt>e1[e2]</tt>
+At :: Function
+
+-- | updated array <tt>auto tmp = e1; tmp[e2] = e3; return tmp;</tt>
+SetAt :: Type -> Function
+
+-- | cast <tt>(T)e</tt>
+Cast :: Type -> Function
+
+-- | functio <tt>std::tuple&lt;T1, T2, ...&gt;(e1, e2, ...)</tt>
+StdTuple :: [Type] -> Function
+
+-- | function <tt>std::get&lt;T, n&gt;(e)</tt>
+StdGet :: Integer -> Function
+
+-- | <pre>
+--   std::array&lt;T, n&gt;{e1, e2, ..., en}
+--   </pre>
+ArrayExt :: Type -> Function
+
+-- | <pre>
+--   std::vector&lt;T&gt;{e1, e2, ...}
+--   </pre>
+VecExt :: Type -> Function
+
+-- | constructors <tt>std::vector&lt;T&gt;()</tt> <i>
+--   <tt>std::vector&lt;T&gt;(n)</tt> </i> <tt>std::vector&lt;T&gt;(n,
+--   e)</tt>
+VecCtor :: Type -> Function
+
+-- | function <tt>std::vector&lt;int&gt; jikka::range(int n)</tt>, which is
+--   similar to Python's <tt>range</tt> or Boost's <tt>boost::range</tt>
+Range :: Function
+
+-- | <tt>size</tt> method of <tt>std::vector&lt;T&gt;</tt>
+MethodSize :: Function
+
+-- | the constructor of <tt>jikka::convex_hull_trick</tt>
+ConvexHullTrickCtor :: Function
+
+-- | This makes a copy of <tt>jikka::convex_hull_trick</tt> and updates it.
+--   This is removed at <a>run</a>.
+ConvexHullTrickCopyAddLine :: Function
+
+-- | the constructors of <tt>atcoder::segtree&lt;T, op, e&gt;</tt>
+SegmentTreeCtor :: Monoid' -> Function
+
+-- | This makes a copy of <tt>atcoder::segtree&lt;T, op, e&gt;</tt> and
+--   updates it. This is removed at <a>run</a>.
+SegmentTreeCopySetPoint :: Monoid' -> Function
+data UnaryOp
+
+-- | <pre>
+--   +
+--   </pre>
+IntNop :: UnaryOp
+
+-- | <pre>
+--   -
+--   </pre>
+Negate :: UnaryOp
+
+-- | <pre>
+--   ~
+--   </pre>
+BitNot :: UnaryOp
+
+-- | <tt>!</tt> / <tt>not</tt>
+Not :: UnaryOp
+
+-- | <pre>
+--   *
+--   </pre>
+Deref :: UnaryOp
+data BinaryOp
+
+-- | <pre>
+--   +
+--   </pre>
+Add :: BinaryOp
+
+-- | <pre>
+--   -
+--   </pre>
+Sub :: BinaryOp
+
+-- | <pre>
+--   *
+--   </pre>
+Mul :: BinaryOp
+
+-- | <pre>
+--   /
+--   </pre>
+Div :: BinaryOp
+
+-- | <pre>
+--   %
+--   </pre>
+Mod :: BinaryOp
+
+-- | <pre>
+--   &amp;
+--   </pre>
+BitAnd :: BinaryOp
+
+-- | <pre>
+--   |
+--   </pre>
+BitOr :: BinaryOp
+
+-- | <pre>
+--   ^
+--   </pre>
+BitXor :: BinaryOp
+
+-- | <pre>
+--   &lt;&lt;
+--   </pre>
+BitLeftShift :: BinaryOp
+
+-- | <pre>
+--   &gt;&gt;
+--   </pre>
+BitRightShift :: BinaryOp
+
+-- | <tt>&amp;&amp;</tt> / <tt>and</tt>
+And :: BinaryOp
+
+-- | <tt>||</tt> / <tt>or</tt>
+Or :: BinaryOp
+
+-- | <pre>
+--   &lt;
+--   </pre>
+LessThan :: BinaryOp
+
+-- | <pre>
+--   &lt;=
+--   </pre>
+LessEqual :: BinaryOp
+
+-- | <pre>
+--   &gt;
+--   </pre>
+GreaterThan :: BinaryOp
+
+-- | <pre>
+--   &gt;=
+--   </pre>
+GreaterEqual :: BinaryOp
+
+-- | <pre>
+--   ==
+--   </pre>
+Equal :: BinaryOp
+
+-- | <pre>
+--   !=
+--   </pre>
+NotEqual :: BinaryOp
+data AssignOp
+
+-- | <pre>
+--   =
+--   </pre>
+SimpleAssign :: AssignOp
+
+-- | <pre>
+--   +=
+--   </pre>
+AddAssign :: AssignOp
+
+-- | <pre>
+--   -=
+--   </pre>
+SubAssign :: AssignOp
+
+-- | <pre>
+--   *=
+--   </pre>
+MulAssign :: AssignOp
+
+-- | <pre>
+--   /=
+--   </pre>
+DivAssign :: AssignOp
+
+-- | <pre>
+--   %=
+--   </pre>
+ModAssign :: AssignOp
+
+-- | <pre>
+--   &lt;&lt;=
+--   </pre>
+BitLeftShiftAssign :: AssignOp
+
+-- | <pre>
+--   &gt;&gt;=
+--   </pre>
+BitRightShiftAssign :: AssignOp
+
+-- | <pre>
+--   &amp;=
+--   </pre>
+BitAndAssign :: AssignOp
+
+-- | <pre>
+--   |=
+--   </pre>
+BitOrAssign :: AssignOp
+
+-- | <pre>
+--   ^=
+--   </pre>
+BitXorAssign :: AssignOp
+data Expr
+Var :: VarName -> Expr
+Lit :: Literal -> Expr
+UnOp :: UnaryOp -> Expr -> Expr
+BinOp :: BinaryOp -> Expr -> Expr -> Expr
+
+-- | <pre>
+--   e1 ? e2 : e3
+--   </pre>
+Cond :: Expr -> Expr -> Expr -> Expr
+
+-- | lambda expression <tt>[=](T1 x1, T2 x2, ...) -&gt; Tr { stmt1; stmt2;
+--   ... }</tt>
+Lam :: [(Type, VarName)] -> Type -> [Statement] -> Expr
+
+-- | <tt>f(e1, e2, ...)</tt> for a callable <tt>f</tt>
+Call :: Expr -> [Expr] -> Expr
+Callable :: Function -> Expr
+data LeftExpr
+
+-- | <pre>
+--   x
+--   </pre>
+LeftVar :: VarName -> LeftExpr
+
+-- | <pre>
+--   e[i]
+--   </pre>
+LeftAt :: LeftExpr -> Expr -> LeftExpr
+
+-- | <pre>
+--   std::get&lt;n&gt;
+--   </pre>
+LeftGet :: Integer -> LeftExpr -> LeftExpr
+data AssignExpr
+
+-- | <pre>
+--   e1 = e2
+--   </pre>
+AssignExpr :: AssignOp -> LeftExpr -> Expr -> AssignExpr
+
+-- | <pre>
+--   ++ e
+--   </pre>
+AssignIncr :: LeftExpr -> AssignExpr
+
+-- | <pre>
+--   -- e
+--   </pre>
+AssignDecr :: LeftExpr -> AssignExpr
+data DeclareRight
+
+-- | <pre>
+--   T x;
+--   </pre>
+DeclareDefault :: DeclareRight
+
+-- | <pre>
+--   T x = e;
+--   </pre>
+DeclareCopy :: Expr -> DeclareRight
+
+-- | <tt>T x(e1, e2, ...);</tt>. This is only for better formatting. This
+--   should not be used while optimization phases.
+DeclareInitialize :: [Expr] -> DeclareRight
+data Statement
+
+-- | <pre>
+--   e;
+--   </pre>
+ExprStatement :: Expr -> Statement
+
+-- | <pre>
+--   { stmt1; stmts2; ...; }
+--   </pre>
+Block :: [Statement] -> Statement
+
+-- | <tt>if (e) { stmt1; stmts2; ...; }</tt> / <tt>if (e) { stmt1; stmts2;
+--   ...; } else { stmt1'; stmt2'; ...; }</tt>
+If :: Expr -> [Statement] -> Maybe [Statement] -> Statement
+
+-- | <pre>
+--   for (T x = e1; e2; e3) { stmt1; stmts2; ...; }
+--   </pre>
+For :: Type -> VarName -> Expr -> Expr -> AssignExpr -> [Statement] -> Statement
+
+-- | <pre>
+--   for (T x : e) { stmt1; stmts2; ...; }
+--   </pre>
+ForEach :: Type -> VarName -> Expr -> [Statement] -> Statement
+
+-- | <pre>
+--   while (e) { stmt1; stmts2; ...; }
+--   </pre>
+While :: Expr -> [Statement] -> Statement
+
+-- | Declarations with/witout initializations. See <a>DeclareRight</a>.
+Declare :: Type -> VarName -> DeclareRight -> Statement
+
+-- | <pre>
+--   auto [x1, x2, ...] = e;
+--   </pre>
+DeclareDestructure :: [VarName] -> Expr -> Statement
+
+-- | <pre>
+--   e1 op= e2;
+--   </pre>
+Assign :: AssignExpr -> Statement
+
+-- | <pre>
+--   assert (e);
+--   </pre>
+Assert :: Expr -> Statement
+
+-- | <pre>
+--   return e;
+--   </pre>
+Return :: Expr -> Statement
+data ToplevelStatement
+
+-- | <pre>
+--   const T x = e;
+--   </pre>
+VarDef :: Type -> VarName -> Expr -> ToplevelStatement
+
+-- | <pre>
+--   T f(T1 x1, T2 x2, ...) { stmt1; stmt2; ... }
+--   </pre>
+FunDef :: Type -> FunName -> [(Type, VarName)] -> [Statement] -> ToplevelStatement
+
+-- | <pre>
+--   static_assert(e, msg);
+--   </pre>
+StaticAssert :: Expr -> String -> ToplevelStatement
+newtype Program
+Program :: [ToplevelStatement] -> Program
+[decls] :: Program -> [ToplevelStatement]
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.VarName
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.VarName
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.VarName
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.VarName
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.FunName
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.FunName
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.FunName
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.FunName
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Monoid'
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Monoid'
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Monoid'
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Monoid'
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Type
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Type
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Type
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Type
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Literal
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Literal
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Literal
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Literal
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Function
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Function
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Function
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Function
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.UnaryOp
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.UnaryOp
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.UnaryOp
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.UnaryOp
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.BinaryOp
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.BinaryOp
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.BinaryOp
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.BinaryOp
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.AssignOp
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.AssignOp
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.AssignOp
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.AssignOp
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.LeftExpr
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.LeftExpr
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.LeftExpr
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.LeftExpr
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.AssignExpr
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.AssignExpr
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.AssignExpr
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.AssignExpr
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Expr
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Expr
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Expr
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Expr
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.DeclareRight
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.DeclareRight
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.DeclareRight
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.DeclareRight
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Statement
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Statement
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Statement
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Statement
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.ToplevelStatement
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.ToplevelStatement
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.ToplevelStatement
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.ToplevelStatement
+instance GHC.Read.Read Jikka.CPlusPlus.Language.Expr.Program
+instance GHC.Show.Show Jikka.CPlusPlus.Language.Expr.Program
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.Expr.Program
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.Expr.Program
+instance Data.String.IsString Jikka.CPlusPlus.Language.Expr.FunName
+instance Data.String.IsString Jikka.CPlusPlus.Language.Expr.VarName
+
+module Jikka.CPlusPlus.Language.VariableAnalysis
+data ReadWriteList
+ReadWriteList :: Set VarName -> Set VarName -> ReadWriteList
+[readList'] :: ReadWriteList -> Set VarName
+[writeList] :: ReadWriteList -> Set VarName
+readVariable :: VarName -> ReadWriteList
+writeVariable :: VarName -> ReadWriteList
+analyzeExpr :: Expr -> ReadWriteList
+analyzeLeftExpr :: LeftExpr -> ReadWriteList
+analyzeAssignExpr :: AssignExpr -> ReadWriteList
+analyzeStatement :: Statement -> ReadWriteList
+analyzeStatements :: [Statement] -> ReadWriteList
+instance GHC.Read.Read Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
+instance GHC.Show.Show Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
+instance GHC.Classes.Ord Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
+instance GHC.Classes.Eq Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
+instance GHC.Base.Semigroup Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
+instance GHC.Base.Monoid Jikka.CPlusPlus.Language.VariableAnalysis.ReadWriteList
+
+module Jikka.CPlusPlus.Language.Util
+fromLeftExpr :: LeftExpr -> Expr
+newFreshName :: MonadAlpha m => NameHint -> m VarName
+renameVarName :: MonadAlpha m => NameHint -> VarName -> m VarName
+renameVarName' :: MonadAlpha m => NameHint -> String -> m VarName
+freeVars :: Expr -> Set VarName
+freeVarsStatements :: [Statement] -> Set VarName
+freeVarsStatement :: Statement -> Set VarName
+freeVarsDeclareRight :: DeclareRight -> Set VarName
+freeVarsAssignExpr :: AssignExpr -> Set VarName
+freeVarsLeftExpr :: LeftExpr -> Set VarName
+shouldBeArray :: [Type] -> Bool
+cinStatement :: Expr -> Statement
+coutStatement :: Expr -> Statement
+repStatement :: VarName -> Expr -> [Statement] -> Statement
+litInt64 :: Integer -> Expr
+litInt32 :: Integer -> Expr
+incrExpr :: Expr -> Expr
+pattern Call' :: Function -> [Expr] -> Expr
+size :: Expr -> Expr
+at :: Expr -> Expr -> Expr
+cast :: Type -> Expr -> Expr
+assignSimple :: VarName -> Expr -> Statement
+assignAt :: VarName -> Expr -> Expr -> Statement
+callFunction :: FunName -> [Type] -> [Expr] -> Expr
+callFunction' :: FunName -> [Type] -> [Expr] -> Statement
+callMethod :: Expr -> FunName -> [Expr] -> Expr
+callMethod' :: Expr -> FunName -> [Expr] -> Statement
+vecCtor :: Type -> [Expr] -> Expr
+begin :: Expr -> Expr
+end :: Expr -> Expr
+mapExprStatementExprM :: Monad m => (Expr -> m Expr) -> (Statement -> m [Statement]) -> Expr -> m Expr
+mapExprStatementLeftExprM :: Monad m => (Expr -> m Expr) -> (Statement -> m [Statement]) -> LeftExpr -> m LeftExpr
+mapExprStatementAssignExprM :: Monad m => (Expr -> m Expr) -> (Statement -> m [Statement]) -> AssignExpr -> m AssignExpr
+mapExprStatementStatementM :: Monad m => (Expr -> m Expr) -> (Statement -> m [Statement]) -> Statement -> m [Statement]
+mapExprStatementToplevelStatementM :: Monad m => (Expr -> m Expr) -> (Statement -> m [Statement]) -> ToplevelStatement -> m ToplevelStatement
+mapExprStatementProgramM :: Monad m => (Expr -> m Expr) -> (Statement -> m [Statement]) -> Program -> m Program
+mapExprStatementProgram :: (Expr -> Expr) -> (Statement -> [Statement]) -> Program -> Program
+mapExprStatementExpr :: (Expr -> Expr) -> (Statement -> [Statement]) -> Expr -> Expr
+mapSubExprM :: Monad m => (Expr -> m Expr) -> Expr -> m Expr
+
+-- | <a>mapDirectExprStatementM</a> replaces exprs which are direct
+--   children of a given statement.
+mapDirectExprStatementM :: Monad m => (Expr -> m Expr) -> Statement -> m Statement
+mapDirectExprAssignExprM :: Monad m => (Expr -> m Expr) -> AssignExpr -> m AssignExpr
+mapDirectExprLeftExprM :: Monad m => (Expr -> m Expr) -> LeftExpr -> m LeftExpr
+replaceExpr :: VarName -> Expr -> Expr -> Expr
+replaceStatement :: VarName -> Expr -> Statement -> Statement
+mapToplevelStatementProgramM :: Monad m => (ToplevelStatement -> m [ToplevelStatement]) -> Program -> m Program
+mapLeftExprAssignExprM :: Applicative m => (LeftExpr -> m LeftExpr) -> AssignExpr -> m AssignExpr
+mapLeftExprAssignExpr :: (LeftExpr -> LeftExpr) -> AssignExpr -> AssignExpr
+mapVarNameExprStatementGenericM :: forall m a. Monad m => ((Expr -> m Expr) -> (Statement -> m [Statement]) -> a) -> (VarName -> m VarName) -> a
+mapVarNameStatementM :: Monad m => (VarName -> m VarName) -> Statement -> m Statement
+mapVarNameToplevelStatementM :: Monad m => (VarName -> m VarName) -> ToplevelStatement -> m ToplevelStatement
+mapVarNameProgramM :: Monad m => (VarName -> m VarName) -> Program -> m Program
+renameVarNameStatement :: VarName -> VarName -> Statement -> Statement
+
+
+-- | <a>Format</a> module converts the AST for C++ to the plain source
+--   code.
+module Jikka.CPlusPlus.Format
+run :: Applicative m => Program -> m Text
+run' :: Program -> String
+type Code = String
+formatExpr :: Expr -> (Code, Prec)
+formatType :: Type -> Code
+instance GHC.Read.Read Jikka.CPlusPlus.Format.Prec
+instance GHC.Show.Show Jikka.CPlusPlus.Format.Prec
+instance GHC.Classes.Ord Jikka.CPlusPlus.Format.Prec
+instance GHC.Classes.Eq Jikka.CPlusPlus.Format.Prec
+instance GHC.Read.Read Jikka.CPlusPlus.Format.Assoc
+instance GHC.Show.Show Jikka.CPlusPlus.Format.Assoc
+instance GHC.Classes.Ord Jikka.CPlusPlus.Format.Assoc
+instance GHC.Classes.Eq Jikka.CPlusPlus.Format.Assoc
+
 
 module Jikka.CPlusPlus.Convert.UseInitialization
 
@@ -630,6 +1038,59 @@ module Jikka.CPlusPlus.Convert.UseInitialization
 --   vector&lt;int&gt; xs(n, 0);
 --   </pre>
 run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+
+
+module Jikka.CPlusPlus.Convert.MoveSemantics
+
+-- | <a>run</a> replaces superfluous copying.
+--   
+--   <h2>Examples</h2>
+--   
+--   Before:
+--   
+--   <pre>
+--   vector&lt;int&gt; solve(vector&lt;int&gt; a) {
+--       vector&lt;int&gt; b = a;
+--       b[0] = 1;
+--       return b;
+--   }
+--   </pre>
+--   
+--   After:
+--   
+--   <pre>
+--   vector&lt;int&gt; solve(vector&lt;int&gt; a) {
+--       a[0] = 1;
+--       return a;
+--   }
+--   </pre>
+--   
+--   Before:
+--   
+--   <pre>
+--   int solve(int a, int b, int x) {
+--       jikka::convex_hull_trick cht = jikka::convex_hull_trick();
+--       cht = jikka::convex_hull_trick::persistent_add_line(cht, a, b);
+--       return cht.get_min(x);
+--   }
+--   </pre>
+--   
+--   After:
+--   
+--   <pre>
+--   int solve(int a, int b, int x) {
+--       jikka::convex_hull_trick cht;
+--       cht = cht.add_line(a, b);
+--       return cht.get_min(x);
+--   }
+--   </pre>
+run :: MonadError Error m => Program -> m Program
+instance GHC.Enum.Bounded Jikka.CPlusPlus.Convert.MoveSemantics.CopyType
+instance GHC.Enum.Enum Jikka.CPlusPlus.Convert.MoveSemantics.CopyType
+instance GHC.Read.Read Jikka.CPlusPlus.Convert.MoveSemantics.CopyType
+instance GHC.Show.Show Jikka.CPlusPlus.Convert.MoveSemantics.CopyType
+instance GHC.Classes.Ord Jikka.CPlusPlus.Convert.MoveSemantics.CopyType
+instance GHC.Classes.Eq Jikka.CPlusPlus.Convert.MoveSemantics.CopyType
 
 
 module Jikka.CPlusPlus.Convert.UnpackTuples
@@ -688,118 +1149,47 @@ module Jikka.CPlusPlus.Convert.OptimizeRange
 --       ...
 --   }
 --   </pre>
-run :: MonadError Error m => Program -> m Program
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
 
 
-module Jikka.CPlusPlus.Convert.MoveSemantics
+module Jikka.CPlusPlus.Convert.InlineSetAt
 
--- | <a>run</a> replaces superfluous copying.
+-- | <a>run</a> does inline expansion of
+--   <tt>jikka::set_at<a>T</a>(...)</tt> function.
 --   
 --   <h2>Examples</h2>
 --   
 --   Before:
 --   
 --   <pre>
---   vector&lt;int&gt; solve(vector&lt;int&gt; a) {
---       vector&lt;int&gt; b = a;
---       b[0] = 1;
---       return b;
---   }
+--   func(jikka::set_at&lt;T&gt;(xs, i, x));
 --   </pre>
 --   
 --   After:
 --   
 --   <pre>
---   vector&lt;int&gt; solve(vector&lt;int&gt; a) {
---       a[0] = 1;
---       return a;
---   }
+--   vector&lt;int&gt; ys = xs;
+--   ys[i] = x;
+--   func(ys);
 --   </pre>
---   
---   Before:
---   
---   <pre>
---   int solve(int a, int b, int x) {
---       jikka::convex_hull_trick cht = jikka::convex_hull_trick();
---       cht = jikka::convex_hull_trick::persistent_add_line(cht, a, b);
---       return cht.get_min(x);
---   }
---   </pre>
---   
---   After:
---   
---   <pre>
---   int solve(int a, int b, int x) {
---       jikka::convex_hull_trick cht;
---       cht = cht.add_line(a, b);
---       return cht.get_min(x);
---   }
---   </pre>
-run :: MonadError Error m => Program -> m Program
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+
+
+module Jikka.CPlusPlus.Convert.BurnFlavouredNames
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+instance GHC.Show.Show Jikka.CPlusPlus.Convert.BurnFlavouredNames.Env
+instance GHC.Read.Read Jikka.CPlusPlus.Convert.BurnFlavouredNames.Env
+instance GHC.Classes.Ord Jikka.CPlusPlus.Convert.BurnFlavouredNames.Env
+instance GHC.Classes.Eq Jikka.CPlusPlus.Convert.BurnFlavouredNames.Env
 
 
 module Jikka.CPlusPlus.Convert.AddMain
 run :: (MonadAlpha m, MonadError Error m) => Program -> IOFormat -> m Program
 
-module Jikka.Common.Matrix
-
--- | <a>Matrix</a> is data for matrices. It is guaranteed that internal
---   arrays are not jagged arrays.
-data Matrix a
-unMatrix :: Matrix a -> Vector (Vector a)
-makeMatrix :: Vector (Vector a) -> Maybe (Matrix a)
-makeMatrix' :: Vector (Vector a) -> Matrix a
-
--- | <a>matsize</a> computes the size of a matrix.
-matsize :: Matrix a -> (Int, Int)
-
--- | <a>matsize</a>` computes the size of a matrix. This assumes inputs are
---   matrices (<a>matcheck</a>).
-matsize' :: Vector (Vector a) -> (Int, Int)
-
--- | <a>matcheck</a> checks a given vector of vectors is a matrix. That is,
---   this returns <a>False</a> for jagged arrays.
-matcheck :: Vector (Vector a) -> Bool
-matzero :: Num a => Int -> Matrix a
-matone :: Num a => Int -> Matrix a
-
--- | <a>matadd</a> calculates the addition &lt;math&gt; of two matrices
---   &lt;math&gt;. This assumes sizes of inputs match.
-matadd :: Num a => Matrix a -> Matrix a -> Matrix a
-
--- | <a>matmul</a> calculates the multiplication &lt;math&gt;of two
---   matrices &lt;math&gt;. This assumes sizes of inputs match.
-matmul :: Num a => Matrix a -> Matrix a -> Matrix a
-
--- | <a>matap</a> calculates the multiplication &lt;math&gt; of a matrix
---   &lt;math&gt; and a vector &lt;math&gt;. This assumes sizes of inputs
---   match.
-matap :: Num a => Matrix a -> Vector a -> Vector a
-matscalar :: Num a => a -> Matrix a -> Matrix a
-
--- | <a>matpow</a> calculates the power &lt;math&gt; of a matrix
---   &lt;math&gt; and a natural number &lt;math&gt;. This assumes inputs
---   are square matrices. This fails for &lt;math&gt;.
-matpow :: (Show a, Num a) => Matrix a -> Integer -> Matrix a
-instance GHC.Base.Functor Jikka.Common.Matrix.Matrix
-instance GHC.Show.Show a => GHC.Show.Show (Jikka.Common.Matrix.Matrix a)
-instance GHC.Classes.Ord a => GHC.Classes.Ord (Jikka.Common.Matrix.Matrix a)
-instance GHC.Classes.Eq a => GHC.Classes.Eq (Jikka.Common.Matrix.Matrix a)
-
-module Jikka.Common.ModInt
-data ModInt
-toModInt :: Integer -> Integer -> ModInt
-fromModInt :: ModInt -> Integer
-moduloOfModInt :: ModInt -> Maybe Integer
-instance GHC.Show.Show Jikka.Common.ModInt.ModInt
-instance GHC.Read.Read Jikka.Common.ModInt.ModInt
-instance GHC.Classes.Ord Jikka.Common.ModInt.ModInt
-instance GHC.Classes.Eq Jikka.Common.ModInt.ModInt
-instance GHC.Num.Num Jikka.Common.ModInt.ModInt
-
 module Jikka.Common.Parse.JoinLines
 joinLinesWithParens :: forall m a. (MonadError Error m, Show a) => (a -> Bool) -> (a -> Bool) -> (a -> Bool) -> [WithLoc a] -> m [WithLoc a]
 removeEmptyLines :: forall a. (a -> Bool) -> [WithLoc a] -> [WithLoc a]
+putTrailingNewline :: Eq a => a -> [a] -> [a]
 
 module Jikka.Common.Parse.OffsideRule
 
@@ -838,12 +1228,12 @@ instance GHC.Classes.Eq Jikka.Common.Parse.ShuntingYard.BinOpInfo
 -- | <a>Expr</a> module has the basic data types for our core language.
 --   They are similar to the GHC Core language.
 module Jikka.Core.Language.Expr
-newtype VarName
-VarName :: String -> VarName
-unVarName :: VarName -> String
-newtype TypeName
-TypeName :: String -> TypeName
-unTypeName :: TypeName -> String
+data VarName
+VarName :: OccName -> NameFlavour -> VarName
+formatVarName :: VarName -> String
+data TypeName
+TypeName :: OccName -> NameFlavour -> TypeName
+formatTypeName :: TypeName -> String
 
 -- | <a>Type</a> represents the types of our core language. This is similar
 --   to the <a>Type</a> of GHC Core. See also
@@ -865,6 +1255,8 @@ data Semigroup'
 SemigroupIntPlus :: Semigroup'
 SemigroupIntMin :: Semigroup'
 SemigroupIntMax :: Semigroup'
+SemigroupIntGcd :: Semigroup'
+SemigroupIntLcm :: Semigroup'
 
 -- | TODO: What is the difference between <a>Literal</a> and
 --   <a>Builtin</a>?
@@ -893,6 +1285,9 @@ CeilDiv :: Builtin
 
 -- | &lt;math&gt;
 CeilMod :: Builtin
+
+-- | divison which has no remainder &lt;math&gt;
+JustDiv :: Builtin
 
 -- | &lt;math&gt;
 Pow :: Builtin
@@ -952,7 +1347,7 @@ BitRightShift :: Builtin
 MatAp :: Integer -> Integer -> Builtin
 
 -- | zero matrix &lt;math&gt;
-MatZero :: Integer -> Builtin
+MatZero :: Integer -> Integer -> Builtin
 
 -- | unit matrix &lt;math&gt;
 MatOne :: Integer -> Builtin
@@ -1061,6 +1456,12 @@ ArgMin :: Builtin
 ArgMax :: Builtin
 
 -- | &lt;math&gt;
+Gcd1 :: Builtin
+
+-- | &lt;math&gt;
+Lcm1 :: Builtin
+
+-- | &lt;math&gt;
 All :: Builtin
 
 -- | &lt;math&gt;
@@ -1085,6 +1486,9 @@ Range3 :: Builtin
 Tuple :: Builtin
 
 -- | &lt;math&gt;
+--   
+--   <a>Parse</a> may make broken <a>Proj</a> with its list of type
+--   arguments is empty. This is fixed by <a>TypeInfer</a> module.
 Proj :: Integer -> Builtin
 
 -- | &lt;math&gt;
@@ -1126,13 +1530,13 @@ ConvexHullTrickGetMin :: Builtin
 -- | &lt;math&gt;
 ConvexHullTrickInsert :: Builtin
 
--- | &lt;math&gt;
+-- | &lt;math&gt; for a semigroup (S)
 SegmentTreeInitList :: Semigroup' -> Builtin
 
--- | &lt;math&gt;
+-- | &lt;math&gt; for a semigroup (S)
 SegmentTreeGetRange :: Semigroup' -> Builtin
 
--- | &lt;math&gt;
+-- | &lt;math&gt; for a semigroup (S)
 SegmentTreeSetPoint :: Semigroup' -> Builtin
 data Literal
 LitBuiltin :: Builtin -> [Type] -> Literal
@@ -1157,15 +1561,12 @@ LitBottom :: Type -> String -> Literal
 data Expr
 Var :: VarName -> Expr
 Lit :: Literal -> Expr
-
--- | The functions are not curried.
 App :: Expr -> Expr -> Expr
-
--- | The lambdas are also not curried.
 Lam :: VarName -> Type -> Expr -> Expr
 
 -- | This "let" is not recursive.
 Let :: VarName -> Type -> Expr -> Expr -> Expr
+Assert :: Expr -> Expr -> Expr
 pattern Fun2Ty :: Type -> Type -> Type -> Type
 pattern Fun3Ty :: Type -> Type -> Type -> Type -> Type
 pattern Fun1STy :: Type -> Type
@@ -1211,14 +1612,13 @@ data ToplevelExpr
 ResultExpr :: Expr -> ToplevelExpr
 ToplevelLet :: VarName -> Type -> Expr -> ToplevelExpr -> ToplevelExpr
 ToplevelLetRec :: VarName -> [(VarName, Type)] -> Type -> Expr -> ToplevelExpr -> ToplevelExpr
+ToplevelAssert :: Expr -> ToplevelExpr -> ToplevelExpr
 type Program = ToplevelExpr
-instance Data.String.IsString Jikka.Core.Language.Expr.VarName
 instance Data.Data.Data Jikka.Core.Language.Expr.VarName
 instance GHC.Read.Read Jikka.Core.Language.Expr.VarName
 instance GHC.Show.Show Jikka.Core.Language.Expr.VarName
 instance GHC.Classes.Ord Jikka.Core.Language.Expr.VarName
 instance GHC.Classes.Eq Jikka.Core.Language.Expr.VarName
-instance Data.String.IsString Jikka.Core.Language.Expr.TypeName
 instance Data.Data.Data Jikka.Core.Language.Expr.TypeName
 instance GHC.Read.Read Jikka.Core.Language.Expr.TypeName
 instance GHC.Show.Show Jikka.Core.Language.Expr.TypeName
@@ -1259,6 +1659,8 @@ instance GHC.Read.Read Jikka.Core.Language.Expr.ToplevelExpr
 instance GHC.Show.Show Jikka.Core.Language.Expr.ToplevelExpr
 instance GHC.Classes.Ord Jikka.Core.Language.Expr.ToplevelExpr
 instance GHC.Classes.Eq Jikka.Core.Language.Expr.ToplevelExpr
+instance Data.String.IsString Jikka.Core.Language.Expr.TypeName
+instance Data.String.IsString Jikka.Core.Language.Expr.VarName
 
 
 -- | <a>BuiltinPatterns</a> provides pattern synonyms for applications of
@@ -1274,6 +1676,7 @@ pattern FloorDiv' :: Expr -> Expr -> Expr
 pattern FloorMod' :: Expr -> Expr -> Expr
 pattern CeilDiv' :: Expr -> Expr -> Expr
 pattern CeilMod' :: Expr -> Expr -> Expr
+pattern JustDiv' :: Expr -> Expr -> Expr
 pattern Pow' :: Expr -> Expr -> Expr
 pattern Abs' :: Expr -> Expr
 pattern Gcd' :: Expr -> Expr -> Expr
@@ -1328,6 +1731,8 @@ pattern Min1' :: Type -> Expr -> Expr
 pattern Max1' :: Type -> Expr -> Expr
 pattern ArgMin' :: Type -> Expr -> Expr
 pattern ArgMax' :: Type -> Expr -> Expr
+pattern Gcd1' :: Type -> Expr -> Expr
+pattern Lcm1' :: Type -> Expr -> Expr
 pattern All' :: Expr -> Expr
 pattern Any' :: Expr -> Expr
 pattern Sorted' :: Type -> Expr -> Expr
@@ -1356,38 +1761,8 @@ pattern SegmentTreeSetPoint' :: Semigroup' -> Expr -> Expr -> Expr -> Expr
 pattern Bottom' :: Type -> String -> Expr
 
 
-module Jikka.Core.Convert.Alpha
-rename :: MonadAlpha m => VarName -> m VarName
-runExpr :: (MonadAlpha m, MonadError Error m) => [(VarName, VarName)] -> Expr -> m Expr
-runToplevelExpr :: (MonadAlpha m, MonadError Error m) => [(VarName, VarName)] -> ToplevelExpr -> m ToplevelExpr
-runProgram :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-
--- | <a>run</a> renames variables in exprs to avoid name conflictions, even
---   if the scopes of two variables are distinct.
---   
---   <h2>Examples</h2>
---   
---   Before:
---   
---   <pre>
---   let x = 0
---   in y = x + x
---   in x = x + y
---   x + y
---   </pre>
---   
---   After:
---   
---   <pre>
---   let x0 = 0
---   in y1 = x0 + x0
---   in x2 = x0 + y1
---   x2 + y1
---   </pre>
-run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-
-
 module Jikka.Core.Language.FreeVars
+freeVars :: Expr -> Set VarName
 
 -- | <a>isFreeVar</a> checks if the given variable occurs in the tiven
 --   expr. This considers contexts.
@@ -1420,57 +1795,96 @@ freeTyVars :: Type -> [TypeName]
 findUnusedVarName :: VarName -> Expr -> VarName
 findUnusedVarName' :: Expr -> VarName
 
-module Jikka.Core.Language.ArithmeticalExpr
-data ArithmeticalExpr
+module Jikka.Core.Language.ArithmeticExpr
+data ArithmeticExpr
 
--- | <a>parseArithmeticalExpr</a> converts a given expr to a normal form
+-- | <a>parseArithmeticExpr</a> converts a given expr to a normal form
 --   &lt;math&gt;. This assumes given exprs have the type &lt;math&gt;.
-parseArithmeticalExpr :: Expr -> ArithmeticalExpr
-formatArithmeticalExpr :: ArithmeticalExpr -> Expr
-integerArithmeticalExpr :: Integer -> ArithmeticalExpr
-negateArithmeticalExpr :: ArithmeticalExpr -> ArithmeticalExpr
-plusArithmeticalExpr :: ArithmeticalExpr -> ArithmeticalExpr -> ArithmeticalExpr
-minusArithmeticalExpr :: ArithmeticalExpr -> ArithmeticalExpr -> ArithmeticalExpr
-multArithmeticalExpr :: ArithmeticalExpr -> ArithmeticalExpr -> ArithmeticalExpr
-isZeroArithmeticalExpr :: ArithmeticalExpr -> Bool
-isOneArithmeticalExpr :: ArithmeticalExpr -> Bool
+parseArithmeticExpr :: Expr -> ArithmeticExpr
+formatArithmeticExpr :: ArithmeticExpr -> Expr
+integerArithmeticExpr :: Integer -> ArithmeticExpr
+negateArithmeticExpr :: ArithmeticExpr -> ArithmeticExpr
+plusArithmeticExpr :: ArithmeticExpr -> ArithmeticExpr -> ArithmeticExpr
+minusArithmeticExpr :: ArithmeticExpr -> ArithmeticExpr -> ArithmeticExpr
+multArithmeticExpr :: ArithmeticExpr -> ArithmeticExpr -> ArithmeticExpr
+incrArithmeticExpr :: ArithmeticExpr -> ArithmeticExpr
+decrArithmeticExpr :: ArithmeticExpr -> ArithmeticExpr
+sumArithmeticExpr :: [ArithmeticExpr] -> ArithmeticExpr
+isZeroArithmeticExpr :: ArithmeticExpr -> Bool
+isOneArithmeticExpr :: ArithmeticExpr -> Bool
+isIntegerArithmeticExpr :: ArithmeticExpr -> Bool
+integerFromArithmeticExpr :: ArithmeticExpr -> Maybe Integer
 
 -- | <a>unNPlusKPattern</a> recognizes a pattern of &lt;math&gt; for a
 --   variable &lt;math&gt; and an integer constant &lt;math&gt;.
-unNPlusKPattern :: ArithmeticalExpr -> Maybe (VarName, Integer)
+unNPlusKPattern :: ArithmeticExpr -> Maybe (VarName, Integer)
 
--- | <a>makeVectorFromArithmeticalExpr</a> makes a vector &lt;math&gt; and
---   a expr &lt;math&gt; from a given vector of variables &lt;math&gt; and
---   a given expr &lt;math&gt; s.t. &lt;math&gt; and &lt;math&gt; don't
---   have &lt;math&gt; as free variables and &lt;math&gt; holds. This
---   assumes given variables and exprs have the type &lt;math&gt;.
+-- | <a>makeVectorFromArithmeticExpr</a> makes a vector &lt;math&gt; and a
+--   expr &lt;math&gt; from a given vector of variables &lt;math&gt; and a
+--   given expr &lt;math&gt; s.t. &lt;math&gt; and &lt;math&gt; don't have
+--   &lt;math&gt; as free variables and &lt;math&gt; holds. This assumes
+--   given variables and exprs have the type &lt;math&gt;.
 --   
 --   <ul>
 --   <li>The returned exprs are normalized with
---   <a>normalizeArithmeticalExpr</a>.</li>
+--   <a>normalizeArithmeticExpr</a>.</li>
 --   </ul>
-makeVectorFromArithmeticalExpr :: Vector VarName -> ArithmeticalExpr -> Maybe (Vector ArithmeticalExpr, ArithmeticalExpr)
+makeVectorFromArithmeticExpr :: Vector VarName -> ArithmeticExpr -> Maybe (Vector ArithmeticExpr, ArithmeticExpr)
 
--- | <a>makeAffineFunctionFromArithmeticalExpr</a> is a specialized version
---   of <a>makeVectorFromArithmeticalExpr</a>. This function returns
+-- | <a>makeAffineFunctionFromArithmeticExpr</a> is a specialized version
+--   of <a>makeVectorFromArithmeticExpr</a>. This function returns
 --   &lt;math&gt; for a given variable &lt;math&gt; and a given expr
 --   &lt;math&gt; where &lt;math&gt; which doesn't use &lt;math&gt; free.
-makeAffineFunctionFromArithmeticalExpr :: VarName -> ArithmeticalExpr -> Maybe (ArithmeticalExpr, ArithmeticalExpr)
+makeAffineFunctionFromArithmeticExpr :: VarName -> ArithmeticExpr -> Maybe (ArithmeticExpr, ArithmeticExpr)
 
--- | <a>splitConstantFactorArithmeticalExpr</a> finds &lt;math&gt; and
+-- | <a>splitConstantFactorArithmeticExpr</a> finds &lt;math&gt; and
 --   &lt;math&gt; for given &lt;math&gt; s.t. &lt;math&gt;.
-splitConstantFactorArithmeticalExpr :: ArithmeticalExpr -> (Integer, ArithmeticalExpr)
-instance GHC.Read.Read Jikka.Core.Language.ArithmeticalExpr.ProductExpr
-instance GHC.Show.Show Jikka.Core.Language.ArithmeticalExpr.ProductExpr
-instance GHC.Classes.Ord Jikka.Core.Language.ArithmeticalExpr.ProductExpr
-instance GHC.Classes.Eq Jikka.Core.Language.ArithmeticalExpr.ProductExpr
-instance GHC.Read.Read Jikka.Core.Language.ArithmeticalExpr.SumExpr
-instance GHC.Show.Show Jikka.Core.Language.ArithmeticalExpr.SumExpr
-instance GHC.Classes.Ord Jikka.Core.Language.ArithmeticalExpr.SumExpr
-instance GHC.Classes.Eq Jikka.Core.Language.ArithmeticalExpr.SumExpr
-instance GHC.Show.Show Jikka.Core.Language.ArithmeticalExpr.ArithmeticalExpr
-instance GHC.Classes.Eq Jikka.Core.Language.ArithmeticalExpr.ArithmeticalExpr
-instance GHC.Classes.Ord Jikka.Core.Language.ArithmeticalExpr.ArithmeticalExpr
+splitConstantFactorArithmeticExpr :: ArithmeticExpr -> (Integer, ArithmeticExpr)
+splitToSumArithmeticExpr :: ArithmeticExpr -> [ArithmeticExpr]
+instance GHC.Read.Read Jikka.Core.Language.ArithmeticExpr.ProductExpr
+instance GHC.Show.Show Jikka.Core.Language.ArithmeticExpr.ProductExpr
+instance GHC.Classes.Ord Jikka.Core.Language.ArithmeticExpr.ProductExpr
+instance GHC.Classes.Eq Jikka.Core.Language.ArithmeticExpr.ProductExpr
+instance GHC.Read.Read Jikka.Core.Language.ArithmeticExpr.SumExpr
+instance GHC.Show.Show Jikka.Core.Language.ArithmeticExpr.SumExpr
+instance GHC.Classes.Ord Jikka.Core.Language.ArithmeticExpr.SumExpr
+instance GHC.Classes.Eq Jikka.Core.Language.ArithmeticExpr.SumExpr
+instance GHC.Show.Show Jikka.Core.Language.ArithmeticExpr.ArithmeticExpr
+instance GHC.Classes.Eq Jikka.Core.Language.ArithmeticExpr.ArithmeticExpr
+instance GHC.Classes.Ord Jikka.Core.Language.ArithmeticExpr.ArithmeticExpr
+
+module Jikka.Core.Language.AssertedHint
+data AssertedHint
+
+-- | <tt>NotEqualHint n</tt> for a integer variable <tt>x</tt> means <tt>x
+--   /= n</tt>
+NotEqualHint :: ArithmeticExpr -> AssertedHint
+
+-- | <tt>BoundHint l r</tt> for a integer variable <tt>x</tt> means <tt>l
+--   &lt;= x &lt; r</tt>
+BoundHint :: Maybe ArithmeticExpr -> Maybe ArithmeticExpr -> AssertedHint
+
+-- | <tt>LengthHint t hint</tt> for a list variable <tt>xs</tt> means
+--   <tt>length xs</tt> satisfies <tt>hint</tt>
+LengthHint :: Type -> AssertedHint -> AssertedHint
+
+-- | <tt>AllHint t hint</tt> for a list variable <tt>xs</tt> means that
+--   <tt>x</tt> satisfies <tt>hint</tt> for all <tt>x</tt> in <tt>xs</tt>
+AllHint :: Type -> AssertedHint -> AssertedHint
+pattern EqualHint :: ArithmeticExpr -> AssertedHint
+parseHints :: Expr -> [(VarName, AssertedHint)]
+lowerBoundWithHints :: [(VarName, AssertedHint)] -> Expr -> Maybe Integer
+upperBoundWithHints :: [(VarName, AssertedHint)] -> Expr -> Maybe Integer
+isZeroWithHints :: [(VarName, AssertedHint)] -> Expr -> Maybe Bool
+nullWithHints :: [(VarName, AssertedHint)] -> Expr -> Maybe Bool
+lengthWithHints :: [(VarName, AssertedHint)] -> Expr -> Maybe Integer
+instance GHC.Show.Show Jikka.Core.Language.AssertedHint.AssertedHint
+instance GHC.Classes.Ord Jikka.Core.Language.AssertedHint.AssertedHint
+instance GHC.Classes.Eq Jikka.Core.Language.AssertedHint.AssertedHint
+instance GHC.Read.Read Jikka.Core.Language.AssertedHint.Term
+instance GHC.Show.Show Jikka.Core.Language.AssertedHint.Term
+instance GHC.Classes.Ord Jikka.Core.Language.AssertedHint.Term
+instance GHC.Classes.Eq Jikka.Core.Language.AssertedHint.Term
 
 module Jikka.Core.Language.LambdaPatterns
 pattern LamId :: Type -> Expr
@@ -1481,6 +1895,7 @@ floorDiv :: MonadError Error m => Integer -> Integer -> m Integer
 floorMod :: MonadError Error m => Integer -> Integer -> m Integer
 ceilDiv :: MonadError Error m => Integer -> Integer -> m Integer
 ceilMod :: MonadError Error m => Integer -> Integer -> m Integer
+justDiv :: MonadError Error m => Integer -> Integer -> m Integer
 modinv :: MonadError Error m => Integer -> Integer -> m Integer
 modpow :: MonadError Error m => Integer -> Integer -> Integer -> m Integer
 fact :: MonadError Error m => Integer -> m Integer
@@ -1492,6 +1907,7 @@ module Jikka.Core.Language.Util
 genType :: MonadAlpha m => m Type
 genVarName :: MonadAlpha m => VarName -> m VarName
 genVarName' :: MonadAlpha m => m VarName
+genVarName'' :: MonadAlpha m => Expr -> m VarName
 mapSubTypesM :: Monad m => (Type -> m Type) -> Type -> m Type
 mapTypeLiteralM :: Monad m => (Type -> m Type) -> Literal -> m Literal
 mapTypeExprM :: Monad m => (Type -> m Type) -> Expr -> m Expr
@@ -1500,20 +1916,31 @@ mapTypeToplevelExprM :: Monad m => (Type -> m Type) -> ToplevelExpr -> m Topleve
 mapTypeProgramM :: Monad m => (Type -> m Type) -> Program -> m Program
 mapTypeProgram :: (Type -> Type) -> Program -> Program
 
--- | <a>mapExprM</a>` substitutes exprs using given two functions, which
+-- | <a>mapSubExprM</a>` substitutes exprs using given two functions, which
 --   are called in pre-order and post-order.
-mapExprM' :: Monad m => ([(VarName, Type)] -> Expr -> m Expr) -> ([(VarName, Type)] -> Expr -> m Expr) -> [(VarName, Type)] -> Expr -> m Expr
-mapExprToplevelExprM' :: Monad m => ([(VarName, Type)] -> Expr -> m Expr) -> ([(VarName, Type)] -> Expr -> m Expr) -> [(VarName, Type)] -> ToplevelExpr -> m ToplevelExpr
-mapExprProgramM' :: Monad m => ([(VarName, Type)] -> Expr -> m Expr) -> ([(VarName, Type)] -> Expr -> m Expr) -> Program -> m Program
-
--- | <a>mapExprM</a> is a wrapper of <a>mapExprM</a>`. This function works
---   in post-order.
-mapExprM :: Monad m => ([(VarName, Type)] -> Expr -> m Expr) -> [(VarName, Type)] -> Expr -> m Expr
+mapSubExprM' :: Monad m => ([(VarName, Type)] -> Expr -> m Expr) -> ([(VarName, Type)] -> Expr -> m Expr) -> [(VarName, Type)] -> Expr -> m Expr
+mapToplevelExprM' :: Monad m => ([(VarName, Type)] -> ToplevelExpr -> m ToplevelExpr) -> ([(VarName, Type)] -> ToplevelExpr -> m ToplevelExpr) -> [(VarName, Type)] -> ToplevelExpr -> m ToplevelExpr
 mapExprToplevelExprM :: Monad m => ([(VarName, Type)] -> Expr -> m Expr) -> [(VarName, Type)] -> ToplevelExpr -> m ToplevelExpr
 mapExprProgramM :: Monad m => ([(VarName, Type)] -> Expr -> m Expr) -> Program -> m Program
-mapExpr :: ([(VarName, Type)] -> Expr -> Expr) -> [(VarName, Type)] -> Expr -> Expr
+
+-- | <a>mapSubExprM</a> is a wrapper of <a>mapSubExprM</a>`. This function
+--   works in post-order.
+mapSubExprM :: Monad m => ([(VarName, Type)] -> Expr -> m Expr) -> [(VarName, Type)] -> Expr -> m Expr
+mapSubExpr :: ([(VarName, Type)] -> Expr -> Expr) -> [(VarName, Type)] -> Expr -> Expr
 mapExprToplevelExpr :: ([(VarName, Type)] -> Expr -> Expr) -> [(VarName, Type)] -> ToplevelExpr -> ToplevelExpr
+
+-- | <tt>mapExprProgram f prog</tt> applies <tt>f</tt> to each root exprs
+--   in <tt>prog</tt>. This doesn't run into sub-exprs. For example,
+--   <tt>toplevel-let x = (e1 + e2) in ...</tt> becomes <tt>toplevel-let x
+--   = (f (e1 + e2)) in ...</tt>, instead of <tt>toplevel-let x = (f (f e1
+--   + f e2)) in ...</tt>
 mapExprProgram :: ([(VarName, Type)] -> Expr -> Expr) -> Program -> Program
+
+-- | <a>mapToplevelExprM</a> is a wrapper of <a>mapToplevelExprM</a>`. This
+--   function works in post-order.
+mapToplevelExprM :: Monad m => ([(VarName, Type)] -> ToplevelExpr -> m ToplevelExpr) -> [(VarName, Type)] -> ToplevelExpr -> m ToplevelExpr
+mapToplevelExprProgramM :: Monad m => ([(VarName, Type)] -> Program -> m Program) -> Program -> m Program
+mapToplevelExprProgram :: ([(VarName, Type)] -> Program -> Program) -> Program -> Program
 listSubExprs :: Expr -> [Expr]
 uncurryFunTy :: Type -> ([Type], Type)
 uncurryLam :: Expr -> ([(VarName, Type)], Expr)
@@ -1528,6 +1955,7 @@ isMatrixTy :: Type -> Bool
 isMatrixTy' :: [Type] -> Bool
 sizeOfMatrixTy :: Type -> Maybe (Int, Int)
 isConstantTimeBuiltin :: Builtin -> Bool
+isLiteral :: Expr -> Bool
 
 -- | <a>isConstantTimeExpr</a> checks whether given exprs are suitable to
 --   propagate.
@@ -1568,6 +1996,7 @@ formatBuiltinIsolated :: Builtin -> [Type] -> String
 formatBuiltin :: Builtin -> [Type] -> [Expr] -> String
 formatType :: Type -> String
 formatExpr :: Expr -> String
+formatToplevelExpr :: ToplevelExpr -> String
 formatProgram :: Program -> String
 instance GHC.Read.Read Jikka.Core.Format.Prec
 instance GHC.Show.Show Jikka.Core.Format.Prec
@@ -1599,6 +2028,54 @@ typecheckToplevelExpr :: MonadError Error m => TypeEnv -> ToplevelExpr -> m Type
 typecheckProgram :: MonadError Error m => Program -> m Type
 
 
+module Jikka.Core.Language.Eta
+etaExpand :: (MonadAlpha m, MonadError Error m) => [(VarName, Type)] -> Expr -> m Expr
+etaExpand' :: (MonadAlpha m, MonadError Error m) => [(VarName, Type)] -> Expr -> m (Maybe Expr)
+etaReduce :: Expr -> Expr
+etaReduce' :: Expr -> Maybe Expr
+
+
+module Jikka.Core.Language.RewriteRules
+data RewriteRule m
+data RewriteEnvironment
+RewriteEnvironment :: [(VarName, Type)] -> [(VarName, AssertedHint)] -> RewriteEnvironment
+[typeEnv] :: RewriteEnvironment -> [(VarName, Type)]
+[assertedHints] :: RewriteEnvironment -> [(VarName, AssertedHint)]
+makeRewriteRule :: Monad m => String -> (RewriteEnvironment -> Expr -> m (Maybe Expr)) -> RewriteRule m
+pureRewriteRule :: Monad m => String -> (RewriteEnvironment -> Expr -> Maybe Expr) -> RewriteRule m
+simpleRewriteRule :: Monad m => String -> (Expr -> Maybe Expr) -> RewriteRule m
+
+-- | <a>traceRewriteRule</a> prints logs when the <a>RewriteRule</a> works.
+traceRewriteRule :: Monad m => RewriteRule m -> RewriteRule m
+emptyRewriteEnvironment :: RewriteEnvironment
+makeRewriteEnvironmentFromTypeEnv :: [(VarName, Type)] -> RewriteEnvironment
+
+-- | <a>applyRewriteRule</a> applies a given rule to a given expr. This
+--   rewrites on all sub-exprs of the given expr, and repeats to rewrite
+--   while it is possible.
+--   
+--   <ul>
+--   <li>This function is idempotent.</li>
+--   <li>This function doesn't terminate when a given rewrite rule doesn't
+--   terminate.</li>
+--   </ul>
+applyRewriteRule :: MonadError Error m => RewriteRule m -> RewriteEnvironment -> Expr -> m (Maybe Expr)
+applyRewriteRuleToplevelExpr :: MonadError Error m => RewriteRule m -> RewriteEnvironment -> ToplevelExpr -> StateT Integer m (Maybe ToplevelExpr)
+applyRewriteRuleProgram :: MonadError Error m => RewriteRule m -> Program -> m (Maybe Program)
+applyRewriteRuleProgram' :: MonadError Error m => RewriteRule m -> Program -> m Program
+instance GHC.Show.Show Jikka.Core.Language.RewriteRules.RewriteEnvironment
+instance GHC.Classes.Ord Jikka.Core.Language.RewriteRules.RewriteEnvironment
+instance GHC.Classes.Eq Jikka.Core.Language.RewriteRules.RewriteEnvironment
+instance GHC.Base.Monad m => GHC.Base.Semigroup (Jikka.Core.Language.RewriteRules.RewriteRule m)
+instance GHC.Base.Monad m => GHC.Base.Monoid (Jikka.Core.Language.RewriteRules.RewriteRule m)
+
+
+module Jikka.Core.Language.NameCheck
+namecheckProgram :: MonadError Error m => Program -> m ()
+namecheckToplevelExpr :: MonadError Error m => [(VarName, Type)] -> ToplevelExpr -> m ()
+namecheckExpr :: MonadError Error m => [(VarName, Type)] -> Expr -> m ()
+
+
 -- | <a>Lint</a> module checks the invariants of data types. Mainly, this
 --   checks types of <a>Expr</a>.
 module Jikka.Core.Language.Lint
@@ -1608,6 +2085,8 @@ postcondition :: MonadError Error m => m a -> m a
 -- | TODO: implement this
 ensureEagerlyEvaluatable :: MonadError Error m => Program -> m ()
 ensureWellTyped :: MonadError Error m => Program -> m ()
+ensureAlphaConverted :: MonadError Error m => Program -> m ()
+lint :: MonadError Error m => Program -> m ()
 
 
 module Jikka.Core.Convert.TrivialLetElimination
@@ -1635,240 +2114,9 @@ run :: MonadError Error m => Program -> m Program
 run' :: Program -> Program
 
 
-module Jikka.Core.Language.RewriteRules
-newtype RewriteRule m
-RewriteRule :: ([(VarName, Type)] -> Expr -> m (Maybe Expr)) -> RewriteRule m
-pureRewriteRule :: Monad m => ([(VarName, Type)] -> Expr -> Maybe Expr) -> RewriteRule m
-simpleRewriteRule :: Monad m => (Expr -> Maybe Expr) -> RewriteRule m
-
--- | <a>applyRewriteRule</a> applies a given rule to a given expr. This
---   rewrites on all sub-exprs of the given expr, and repeats to rewrite
---   while it is possible.
---   
---   <ul>
---   <li>This function is idempotent.</li>
---   <li>This function doesn't terminate when a given rewrite rule doesn't
---   terminate.</li>
---   </ul>
-applyRewriteRule :: MonadError Error m => RewriteRule m -> [(VarName, Type)] -> Expr -> StateT Integer m (Maybe Expr)
-applyRewriteRule' :: MonadError Error m => RewriteRule m -> [(VarName, Type)] -> Expr -> m (Maybe Expr)
-applyRewriteRuleToplevelExpr :: MonadError Error m => RewriteRule m -> [(VarName, Type)] -> ToplevelExpr -> StateT Integer m (Maybe ToplevelExpr)
-applyRewriteRuleProgram :: MonadError Error m => RewriteRule m -> Program -> m (Maybe Program)
-applyRewriteRuleProgram' :: MonadError Error m => RewriteRule m -> Program -> m Program
-traceRewriteRule :: Monad m => RewriteRule m -> RewriteRule m
-instance GHC.Base.Monad m => GHC.Base.Semigroup (Jikka.Core.Language.RewriteRules.RewriteRule m)
-instance GHC.Base.Monad m => GHC.Base.Monoid (Jikka.Core.Language.RewriteRules.RewriteRule m)
-
-
-module Jikka.Core.Convert.StrengthReduction
-
--- | TODO: Split and remove this module.
+module Jikka.Core.Convert.Eta
 run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-
-
--- | &lt;math&gt;
-module Jikka.Core.Convert.SpecializeFoldl
-
--- | <a>run</a> reduces summations and products.
---   
---   <h2>Example</h2>
---   
---   Before:
---   
---   <pre>
---   foldl (fun x y -&gt; x + y) 0 xs
---   </pre>
---   
---   After:
---   
---   <pre>
---   sum xs
---   </pre>
---   
---   <h2>List of builtin functions which are reduced</h2>
---   
---   <h3>Source functions</h3>
---   
---   <ul>
---   <li><a>Foldl</a> &lt;math&gt;</li>
---   </ul>
---   
---   <h3>Destination functions</h3>
---   
---   <ul>
---   <li><a>Sum</a> &lt;math&gt;</li>
---   <li><a>Product</a> &lt;math&gt;</li>
---   <li><a>ModSum</a> &lt;math&gt;</li>
---   <li><a>ModProduct</a> &lt;math&gt;</li>
---   <li><a>All</a> &lt;math&gt;</li>
---   <li><a>Any</a> &lt;math&gt;</li>
---   <li><a>Max1</a> &lt;math&gt;</li>
---   <li><a>Min1</a> &lt;math&gt;</li>
---   <li><a>Iterate</a> &lt;math&gt;</li>
---   </ul>
-run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-
-
--- | &lt;math&gt;
-module Jikka.Core.Convert.ConstantFolding
-
--- | <a>run</a> folds constants in given programs. For example, this
---   converts the following:
---   
---   <pre>
---   3 x + 2 + 1
---   </pre>
---   
---   to the follwoing:
---   
---   <pre>
---   3 x + 3
---   </pre>
-run :: MonadError Error m => Program -> m Program
-rule :: MonadError Error m => RewriteRule m
-
--- | <h2>List of functions which are reduced</h2>
---   
---   <h3>Basic arithmetical functions</h3>
---   
---   <ul>
---   <li><a>Negate</a> &lt;math&gt;</li>
---   <li><a>Plus</a> &lt;math&gt;</li>
---   <li><a>Minus</a> &lt;math&gt;</li>
---   <li><a>Mult</a> &lt;math&gt;</li>
---   <li><a>FloorDiv</a> &lt;math&gt;</li>
---   <li><a>FloorMod</a> &lt;math&gt;</li>
---   <li><a>CeilDiv</a> &lt;math&gt;</li>
---   <li><a>CeilMod</a> &lt;math&gt;</li>
---   <li><a>Pow</a> &lt;math&gt;</li>
---   </ul>
---   
---   <h3>Advanced arithmetical functions</h3>
---   
---   <ul>
---   <li><a>Abs</a> &lt;math&gt;</li>
---   <li><a>Gcd</a> &lt;math&gt;</li>
---   <li><a>Lcm</a> &lt;math&gt;</li>
---   </ul>
-reduceConstArithmeticalExpr :: Monad m => RewriteRule m
-
--- | <h2>List of functions which are reduced</h2>
---   
---   <h3>Max functions</h3>
---   
---   <ul>
---   <li><a>Min2</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
---   <li><a>Max2</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
---   </ul>
-reduceConstMaxExpr :: Monad m => RewriteRule m
-
--- | <h2>List of functions which are reduced</h2>
---   
---   <h3>Boolean functions</h3>
---   
---   <ul>
---   <li><a>Not</a> &lt;math&gt;</li>
---   <li><a>And</a> &lt;math&gt;</li>
---   <li><a>Or</a> &lt;math&gt;</li>
---   <li><a>Implies</a> &lt;math&gt;</li>
---   <li><a>If</a> &lt;math&gt;</li>
---   </ul>
-reduceConstBooleanExpr :: Monad m => RewriteRule m
-
--- | <h2>List of functions which are reduced</h2>
---   
---   <h3>Bitwise boolean functions</h3>
---   
---   <ul>
---   <li><a>BitNot</a> &lt;math&gt;</li>
---   <li><a>BitAnd</a> &lt;math&gt;</li>
---   <li><a>BitOr</a> &lt;math&gt;</li>
---   <li><a>BitXor</a> &lt;math&gt;</li>
---   <li><a>BitLeftShift</a> &lt;math&gt;</li>
---   <li><a>BitRightShift</a> &lt;math&gt;</li>
---   </ul>
-reduceConstBitExpr :: Monad m => RewriteRule m
-
--- | <h2>List of functions which are reduced</h2>
---   
---   <h3>Comparison functions</h3>
---   
---   <ul>
---   <li><a>LessThan</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
---   <li><a>LessEqual</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
---   <li><a>GreaterThan</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
---   <li><a>GreaterEqual</a> &lt;math&gt; (specialized to
---   &lt;math&gt;)</li>
---   <li><a>Equal</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
---   <li><a>NotEqual</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
---   </ul>
-reduceConstComparison :: Monad m => RewriteRule m
-
-
-module Jikka.Core.Convert.CloseMin
-
--- | <a>run</a> reduces maximums and minimums.
---   
---   <h2>Examples</h2>
---   
---   Before:
---   
---   <pre>
---   max (map (fun x -&gt; 3 + f x) xs)
---   </pre>
---   
---   After:
---   
---   <pre>
---   3 + max (map f xs)
---   </pre>
---   
---   <h2>List of builtin functions which are reduced</h2>
---   
---   &lt;math&gt;
---   
---   <h3>Target functions</h3>
---   
---   <ul>
---   <li><a>Max1</a> &lt;math&gt;</li>
---   <li><a>Min1</a> &lt;math&gt;</li>
---   <li><a>ArgMax</a> &lt;math&gt;</li>
---   <li><a>ArgMin</a> &lt;math&gt;</li>
---   </ul>
---   
---   <h3>Related functions</h3>
---   
---   <ul>
---   <li><a>Max2</a> &lt;math&gt;</li>
---   <li><a>Min2</a> &lt;math&gt;</li>
---   </ul>
---   
---   <h3>List Build functions</h3>
---   
---   <ul>
---   <li><tt>Nil</tt> &lt;math&gt;</li>
---   <li><a>Cons</a> &lt;math&gt;</li>
---   <li><a>Range1</a> &lt;math&gt;</li>
---   </ul>
---   
---   <h3>List Map functions</h3>
---   
---   <ul>
---   <li><a>Map</a> &lt;math&gt;</li>
---   <li><a>Filter</a> &lt;math&gt;</li>
---   <li><a>Reversed</a> &lt;math&gt;</li>
---   <li><a>Sorted</a> &lt;math&gt;</li>
---   </ul>
-run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-rule :: Monad m => RewriteRule m
-reduceMin :: Monad m => RewriteRule m
-reduceMax :: Monad m => RewriteRule m
-
--- | TODO: implement this
-reduceArgMin :: Monad m => RewriteRule m
-
--- | TODO: implement this
-reduceArgMax :: Monad m => RewriteRule m
+rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
 
 
 module Jikka.Core.Convert.BubbleLet
@@ -1912,6 +2160,126 @@ module Jikka.Core.Convert.Beta
 --   </pre>
 run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
 rule :: MonadAlpha m => RewriteRule m
+
+
+module Jikka.Core.Convert.Alpha
+
+-- | <a>run</a> renames variables in exprs to avoid name conflictions, even
+--   if the scopes of two variables are distinct.
+--   
+--   <h2>Examples</h2>
+--   
+--   Before:
+--   
+--   <pre>
+--   let x = 0
+--   in y = x + x
+--   in x = x + y
+--   x + y
+--   </pre>
+--   
+--   After:
+--   
+--   <pre>
+--   let x0 = 0
+--   in y1 = x0 + x0
+--   in x2 = x0 + y1
+--   x2 + y1
+--   </pre>
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+runProgram :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+runToplevelExpr :: (MonadAlpha m, MonadError Error m) => [(VarName, Type)] -> ToplevelExpr -> m ToplevelExpr
+runExpr :: (MonadAlpha m, MonadError Error m) => [(VarName, Type)] -> Expr -> m Expr
+
+module Jikka.Core.Language.ModuloExpr
+data ModuloExpr
+
+-- | <a>parseModuloExpr</a> converts a given expr to a normal form
+--   &lt;math&gt;. This assumes given exprs have the type &lt;math&gt;.
+parseModuloExpr :: Expr -> Maybe ModuloExpr
+
+-- | <a>formatTopModuloExpr</a> convert <a>ModuloExpr</a> to <a>Expr</a>
+--   with adding <a>FloorMod</a> at only the root.
+formatTopModuloExpr :: ModuloExpr -> Expr
+
+-- | <a>formatBottomModuloExpr</a> convert <a>ModuloExpr</a> to <a>Expr</a>
+--   with adding <a>FloorMod</a> at every nodes.
+formatBottomModuloExpr :: ModuloExpr -> Expr
+integerModuloExpr :: Modulo -> Integer -> ModuloExpr
+negateModuloExpr :: ModuloExpr -> ModuloExpr
+plusModuloExpr :: ModuloExpr -> ModuloExpr -> Maybe ModuloExpr
+minusModuloExpr :: ModuloExpr -> ModuloExpr -> Maybe ModuloExpr
+multModuloExpr :: ModuloExpr -> ModuloExpr -> Maybe ModuloExpr
+isZeroModuloExpr :: ModuloExpr -> Bool
+isOneModuloExpr :: ModuloExpr -> Bool
+moduloOfModuloExpr :: ModuloExpr -> Expr
+arithmeticExprFromModuloExpr :: ModuloExpr -> ArithmeticExpr
+
+-- | <a>Modulo</a> is just a newtype to avoid mistakes that swapping left
+--   and right of mod-op.
+newtype Modulo
+Modulo :: Expr -> Modulo
+[unModulo] :: Modulo -> Expr
+formatModulo :: Modulo -> String
+isModulo :: Expr -> Modulo -> Bool
+instance GHC.Read.Read Jikka.Core.Language.ModuloExpr.Modulo
+instance GHC.Show.Show Jikka.Core.Language.ModuloExpr.Modulo
+instance GHC.Classes.Ord Jikka.Core.Language.ModuloExpr.Modulo
+instance GHC.Classes.Eq Jikka.Core.Language.ModuloExpr.Modulo
+instance GHC.Read.Read Jikka.Core.Language.ModuloExpr.ProductExpr
+instance GHC.Show.Show Jikka.Core.Language.ModuloExpr.ProductExpr
+instance GHC.Classes.Ord Jikka.Core.Language.ModuloExpr.ProductExpr
+instance GHC.Classes.Eq Jikka.Core.Language.ModuloExpr.ProductExpr
+instance GHC.Read.Read Jikka.Core.Language.ModuloExpr.SumExpr
+instance GHC.Show.Show Jikka.Core.Language.ModuloExpr.SumExpr
+instance GHC.Classes.Ord Jikka.Core.Language.ModuloExpr.SumExpr
+instance GHC.Classes.Eq Jikka.Core.Language.ModuloExpr.SumExpr
+instance GHC.Show.Show Jikka.Core.Language.ModuloExpr.ModuloExpr
+instance GHC.Classes.Eq Jikka.Core.Language.ModuloExpr.ModuloExpr
+instance GHC.Classes.Ord Jikka.Core.Language.ModuloExpr.ModuloExpr
+
+
+-- | &lt;math&gt;
+module Jikka.Core.Convert.SpecializeFoldl
+
+-- | <a>run</a> reduces summations and products.
+--   
+--   <h2>Example</h2>
+--   
+--   Before:
+--   
+--   <pre>
+--   foldl (fun x y -&gt; x + y) 0 xs
+--   </pre>
+--   
+--   After:
+--   
+--   <pre>
+--   sum xs
+--   </pre>
+--   
+--   <h2>List of builtin functions which are reduced</h2>
+--   
+--   <h3>Source functions</h3>
+--   
+--   <ul>
+--   <li><a>Foldl</a> &lt;math&gt;</li>
+--   </ul>
+--   
+--   <h3>Destination functions</h3>
+--   
+--   <ul>
+--   <li><a>Sum</a> &lt;math&gt;</li>
+--   <li><a>Product</a> &lt;math&gt;</li>
+--   <li><a>ModSum</a> &lt;math&gt;</li>
+--   <li><a>ModProduct</a> &lt;math&gt;</li>
+--   <li><a>All</a> &lt;math&gt;</li>
+--   <li><a>Any</a> &lt;math&gt;</li>
+--   <li><a>Max1</a> &lt;math&gt;</li>
+--   <li><a>Min1</a> &lt;math&gt;</li>
+--   <li><a>Iterate</a> &lt;math&gt;</li>
+--   </ul>
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
 
 
 module Jikka.Core.Convert.UnpackTuple
@@ -1972,11 +2340,11 @@ run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
 runExpr :: (MonadAlpha m, MonadError Error m) => [(VarName, Type)] -> Expr -> m Expr
 runRule :: (MonadAlpha m, MonadError Error m) => [(VarName, Type)] -> Expr -> Expr -> m ([(VarName, Type)], Expr, Expr)
 data Equation
-TypeEquation :: Type -> Type -> Equation
+TypeEquation :: Type -> Type -> [Hint] -> Equation
 TypeAssertion :: VarName -> Type -> Equation
 formularizeProgram :: (MonadAlpha m, MonadError Error m) => Program -> m [Equation]
-sortEquations :: [Equation] -> ([(Type, Type)], [(VarName, Type)])
-mergeAssertions :: [(VarName, Type)] -> [(Type, Type)]
+sortEquations :: [Equation] -> ([(Type, Type, [Hint])], [(VarName, Type)])
+mergeAssertions :: [(VarName, Type)] -> [(Type, Type, [Hint])]
 
 -- | <a>Subst</a> is type substituion. It's a mapping from type variables
 --   to their actual types.
@@ -1984,12 +2352,24 @@ newtype Subst
 Subst :: Map TypeName Type -> Subst
 [unSubst] :: Subst -> Map TypeName Type
 subst :: Subst -> Type -> Type
-solveEquations :: MonadError Error m => [(Type, Type)] -> m Subst
-substProgram :: Subst -> Program -> Program
+
+-- | <a>substDefault</a> replaces all undetermined type variables with the
+--   given default type.
+substDefault :: Type -> Type -> Type
+solveEquations :: MonadError Error m => [(Type, Type, [Hint])] -> m Subst
+substProgram :: MonadError Error m => Maybe Type -> Subst -> Program -> m Program
+instance GHC.Read.Read Jikka.Core.Convert.TypeInfer.Hint
+instance GHC.Show.Show Jikka.Core.Convert.TypeInfer.Hint
+instance GHC.Classes.Ord Jikka.Core.Convert.TypeInfer.Hint
+instance GHC.Classes.Eq Jikka.Core.Convert.TypeInfer.Hint
 instance GHC.Read.Read Jikka.Core.Convert.TypeInfer.Equation
 instance GHC.Show.Show Jikka.Core.Convert.TypeInfer.Equation
 instance GHC.Classes.Ord Jikka.Core.Convert.TypeInfer.Equation
 instance GHC.Classes.Eq Jikka.Core.Convert.TypeInfer.Equation
+instance GHC.Read.Read Jikka.Core.Convert.TypeInfer.Subst
+instance GHC.Show.Show Jikka.Core.Convert.TypeInfer.Subst
+instance GHC.Classes.Ord Jikka.Core.Convert.TypeInfer.Subst
+instance GHC.Classes.Eq Jikka.Core.Convert.TypeInfer.Subst
 
 
 -- | &lt;math&gt;
@@ -2225,11 +2605,6 @@ rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
 runFunctionBody :: (MonadAlpha m, MonadError Error m) => VarName -> VarName -> VarName -> Expr -> VarName -> VarName -> VarName -> MaybeT m Expr
 
 
-module Jikka.Core.Convert.Eta
-run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-rule :: MonadAlpha m => RewriteRule m
-
-
 module Jikka.Core.Convert.CumulativeSum
 
 -- | <a>run</a> introduces cumulative sums.
@@ -2239,7 +2614,7 @@ module Jikka.Core.Convert.CumulativeSum
 --   Before:
 --   
 --   <pre>
---   sum (fun i -&gt; a[i]) (range n)
+--   sum (map (fun i -&gt; a[i]) (range n))
 --   </pre>
 --   
 --   After:
@@ -2294,6 +2669,509 @@ module Jikka.Core.Convert.ConstantPropagation
 --   NOTE: this doesn't constant folding.
 run :: MonadError Error m => Program -> m Program
 run' :: Program -> Program
+
+
+module Jikka.Core.Convert.ArithmeticExpr
+
+-- | <a>run</a> sorts arithmetical exprs.
+--   
+--   <h2>Examples</h2>
+--   
+--   Before:
+--   
+--   <pre>
+--   1 + a * 1 + b - b
+--   </pre>
+--   
+--   After:
+--   
+--   <pre>
+--   a + 1
+--   </pre>
+run :: MonadError Error m => Program -> m Program
+runExpr :: MonadError Error m => [(VarName, Type)] -> Expr -> m Expr
+
+
+module Jikka.Core.Convert.ANormal
+
+-- | <a>run</a> makes a given program A-normal form. A program is an
+--   A-normal form iff assigned exprs of all let-statements are values or
+--   function applications. For example, this converts the following:
+--   
+--   <pre>
+--   (let x = 1 in x) + ((fun y -&gt; y) 1)
+--   </pre>
+--   
+--   to:
+--   
+--   <pre>
+--   let x = 1
+--   in let f = fun y -&gt; y
+--   in let z = f x
+--   in z
+--   </pre>
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+
+
+-- | <a>FromCore</a> converts exprs of our core language to exprs of C++.
+module Jikka.CPlusPlus.Convert.FromCore
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+instance GHC.Read.Read Jikka.CPlusPlus.Convert.FromCore.Env
+instance GHC.Show.Show Jikka.CPlusPlus.Convert.FromCore.Env
+instance GHC.Classes.Ord Jikka.CPlusPlus.Convert.FromCore.Env
+instance GHC.Classes.Eq Jikka.CPlusPlus.Convert.FromCore.Env
+instance GHC.Base.Monad m => Jikka.CPlusPlus.Convert.FromCore.MonadStatements (Control.Monad.Trans.Writer.Strict.WriterT (Data.Semigroup.Internal.Dual [Jikka.CPlusPlus.Language.Expr.Statement]) m)
+
+module Jikka.CPlusPlus.Convert
+run :: (MonadAlpha m, MonadError Error m) => Program -> Maybe IOFormat -> m Program
+
+module Jikka.Core.Language.Value
+data Value
+ValInt :: Integer -> Value
+ValBool :: Bool -> Value
+ValList :: Vector Value -> Value
+ValTuple :: [Value] -> Value
+ValBuiltin :: Builtin -> [Type] -> [Value] -> Value
+
+-- | The <a>Env</a> may contain the <a>ValLambda</a> cyclicly.
+ValLambda :: Maybe VarName -> Env -> VarName -> Type -> Expr -> Value
+type Env = [(VarName, Value)]
+literalToValue :: MonadError Error m => Literal -> m Value
+valueToInt :: MonadError Error m => Value -> m Integer
+valueToList :: MonadError Error m => Value -> m (Vector Value)
+valueToIntList :: MonadError Error m => Value -> m [Integer]
+valueToBool :: MonadError Error m => Value -> m Bool
+valueToBoolList :: MonadError Error m => Value -> m [Bool]
+valueToTuple :: MonadError Error m => Value -> m [Value]
+valueToIntPair :: MonadError Error m => Value -> m (Integer, Integer)
+valueToVector :: MonadError Error m => Value -> m (Vector Integer)
+valueToMatrix :: MonadError Error m => Value -> m (Matrix Integer)
+valueFromVector :: Vector Integer -> Value
+valueFromMatrix :: Matrix Integer -> Value
+valueToModVector :: MonadError Error m => Integer -> Value -> m (Vector ModInt)
+valueToModMatrix :: MonadError Error m => Integer -> Value -> m (Matrix ModInt)
+valueFromModVector :: Vector ModInt -> Value
+valueFromModMatrix :: Matrix ModInt -> Value
+compareValues :: Value -> Value -> Maybe Ordering
+compareValues' :: Value -> Value -> Ordering
+minValue :: Value -> Value -> Value
+maxValue :: Value -> Value -> Value
+formatValue :: Value -> String
+readValueIO :: (MonadError Error m, MonadIO m) => IOFormat -> m ([Value], Map String Value)
+writeValueIO :: (MonadError Error m, MonadIO m) => IOFormat -> Map String Value -> Value -> m ()
+instance GHC.Read.Read Jikka.Core.Language.Value.Value
+instance GHC.Classes.Eq Jikka.Core.Language.Value.Value
+
+
+-- | <a>Evaluate</a> evaluates exprs to values. Also this recognizes users'
+--   inputs at once.
+--   
+--   The implementation assumes that all variable names don't conflict even
+--   when their scopes are distinct.
+module Jikka.Core.Evaluate
+run :: (MonadAlpha m, MonadFix m, MonadError Error m) => Program -> [Value] -> m Value
+
+-- | <a>callProgram</a> evaluates programs with given arguments. This
+--   function assumes that given programs are ready for eager evaluation
+--   (<tt>ensureEagerlyEvaluatable</tt>).
+callProgram :: (MonadFix m, MonadError Error m) => Program -> [Value] -> m Value
+data Value
+ValInt :: Integer -> Value
+ValBool :: Bool -> Value
+ValList :: Vector Value -> Value
+ValTuple :: [Value] -> Value
+ValBuiltin :: Builtin -> [Type] -> [Value] -> Value
+
+-- | The <a>Env</a> may contain the <a>ValLambda</a> cyclicly.
+ValLambda :: Maybe VarName -> Env -> VarName -> Type -> Expr -> Value
+
+
+module Jikka.Core.Parse.Token
+data Operator
+Plus :: Operator
+Minus :: Operator
+Mult :: Operator
+FloorDiv :: Operator
+FloorMod :: Operator
+CeilDiv :: Operator
+CeilMod :: Operator
+JustDiv :: Operator
+Pow :: Operator
+And :: Operator
+Or :: Operator
+BitNot :: Operator
+BitAnd :: Operator
+BitOr :: Operator
+BitXor :: Operator
+BitLShift :: Operator
+BitRShift :: Operator
+DoubleEqual :: Operator
+NotEqual :: Operator
+LessThan :: Operator
+LessEqual :: Operator
+GreaterThan :: Operator
+GreaterEqual :: Operator
+
+-- | We don't have to classify tokens in detail, but it's convenient for
+--   testing and debugging.
+data Token
+Ident :: String -> Token
+Int :: Integer -> Token
+Bool :: Bool -> Token
+String :: String -> Token
+Let :: Token
+Rec :: Token
+In :: Token
+If :: Token
+Then :: Token
+Else :: Token
+Fun :: Token
+Dot :: Token
+Assert :: Token
+Forall :: Token
+Arrow :: Token
+Equal :: Token
+Colon :: Token
+Comma :: Token
+Underscore :: Token
+BackArrow :: Token
+At :: Token
+OpenBracket :: Token
+OpenParen :: Token
+CloseBracket :: Token
+CloseParen :: Token
+Operator :: Operator -> Token
+type Token' = WithLoc Token
+instance GHC.Read.Read Jikka.Core.Parse.Token.Operator
+instance GHC.Show.Show Jikka.Core.Parse.Token.Operator
+instance GHC.Classes.Ord Jikka.Core.Parse.Token.Operator
+instance GHC.Classes.Eq Jikka.Core.Parse.Token.Operator
+instance GHC.Read.Read Jikka.Core.Parse.Token.Token
+instance GHC.Show.Show Jikka.Core.Parse.Token.Token
+instance GHC.Classes.Ord Jikka.Core.Parse.Token.Token
+instance GHC.Classes.Eq Jikka.Core.Parse.Token.Token
+
+
+-- | See also Haskell's <a>Syntax Reference</a>.
+module Jikka.Core.Parse.Happy
+runProgram :: (MonadAlpha m, MonadError Error m) => [WithLoc Token] -> m Program
+runExpr :: (MonadAlpha m, MonadError Error m) => [WithLoc Token] -> m Expr
+runType :: (MonadAlpha m, MonadError Error m) => [WithLoc Token] -> m Type
+runRule :: (MonadAlpha m, MonadError Error m) => [WithLoc Token] -> m (String, [(VarName, Type)], Expr, Expr)
+
+
+module Jikka.Core.Parse.Alex
+run :: MonadError Error m => String -> m [Token']
+instance GHC.Show.Show Jikka.Core.Parse.Alex.AlexPosn
+instance GHC.Classes.Eq Jikka.Core.Parse.Alex.AlexPosn
+instance GHC.Base.Functor Jikka.Core.Parse.Alex.Alex
+instance GHC.Base.Applicative Jikka.Core.Parse.Alex.Alex
+instance GHC.Base.Monad Jikka.Core.Parse.Alex.Alex
+
+module Jikka.Core.Parse
+run :: (MonadAlpha m, MonadError Error m) => FilePath -> Text -> m Program
+parseProgram :: (MonadAlpha m, MonadError Error m) => String -> m Program
+parseExpr :: (MonadAlpha m, MonadError Error m) => String -> m Expr
+parseType :: (MonadAlpha m, MonadError Error m) => String -> m Type
+parseRule :: (MonadAlpha m, MonadError Error m) => String -> m (String, [(VarName, Type)], Expr, Expr)
+
+module Jikka.Core.Language.QuasiRules
+r :: QuasiQuoter
+alphaExpr :: (MonadAlpha m, MonadError Error m) => [(VarName, Type)] -> Expr -> m Expr
+makeRewriteRule :: Monad m => String -> (RewriteEnvironment -> Expr -> m (Maybe Expr)) -> RewriteRule m
+genVarName' :: MonadAlpha m => m VarName
+instance GHC.Show.Show Jikka.Core.Language.QuasiRules.RenamedVarName
+instance GHC.Classes.Ord Jikka.Core.Language.QuasiRules.RenamedVarName
+instance GHC.Classes.Eq Jikka.Core.Language.QuasiRules.RenamedVarName
+
+
+-- | &lt;math&gt;
+module Jikka.Core.Convert.SortAbs
+
+-- | <a>run</a> reduces &lt;math&gt; to &lt;math&gt; when &lt;math&gt;
+--   contains &lt;math&gt; and &lt;math&gt; holds.
+--   
+--   <h2>Example</h2>
+--   
+--   Before:
+--   
+--   <pre>
+--   sum (map (fun (a_i: int) -&gt;
+--       sum (map (fun (a_j: int) -&gt;
+--           abs (a_i - a_j)
+--       ) a)
+--   ) a)
+--   </pre>
+--   
+--   After:
+--   
+--   <pre>
+--   let b = sort a
+--   in sum (map (fun (i: int) -&gt;
+--       (sum (map (fun (b_j: int) -&gt;
+--           b_i - b_j
+--       ) b[:i])
+--       + 0
+--       + sum (map (fun (b_j: int) -&gt;
+--           b_j - b_i
+--       ) b[i + 1:]))
+--   ) (range (length b)))
+--   </pre>
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+
+-- | &lt;math&gt;
+module Jikka.Core.Convert.ShortCutFusion
+
+-- | <a>run</a> does short cut fusion.
+--   
+--   <ul>
+--   <li>This function is mainly for polymorphic reductions. This dosn't do
+--   much about concrete things, e.g., arithmetical operations.</li>
+--   <li>This does nothing about <a>Build</a>, <a>Scanl</a> or <a>SetAt</a>
+--   except combinations with <a>Len</a> or <a>At</a>.</li>
+--   </ul>
+--   
+--   <h2>Example</h2>
+--   
+--   Before:
+--   
+--   <pre>
+--   length (map f (cons (-1) (range n)))
+--   </pre>
+--   
+--   After:
+--   
+--   <pre>
+--   n + 1
+--   </pre>
+--   
+--   <h2>List of builtin functions which are reduced</h2>
+--   
+--   <h3>Build functions</h3>
+--   
+--   <ul>
+--   <li><tt>Nil</tt> &lt;math&gt;</li>
+--   <li><a>Cons</a> &lt;math&gt;</li>
+--   <li><a>Range1</a> &lt;math&gt;</li>
+--   <li><a>Range2</a> &lt;math&gt;</li>
+--   <li><a>Range3</a> &lt;math&gt;</li>
+--   </ul>
+--   
+--   <h3>Map functions</h3>
+--   
+--   <ul>
+--   <li><a>Map</a> &lt;math&gt;</li>
+--   <li><a>Filter</a> &lt;math&gt;</li>
+--   <li><a>Reversed</a> &lt;math&gt;</li>
+--   <li><a>Sorted</a> &lt;math&gt;</li>
+--   </ul>
+--   
+--   <h3>Fold functions</h3>
+--   
+--   <ul>
+--   <li><a>Foldl</a> &lt;math&gt;</li>
+--   <li><a>Len</a> &lt;math&gt;</li>
+--   <li><a>At</a> &lt;math&gt;</li>
+--   <li><a>Elem</a> &lt;math&gt;</li>
+--   </ul>
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <ul>
+--   <li><a>Range1</a> remains.</li>
+--   <li><a>Range2</a> is removed.</li>
+--   <li><a>Range3</a> is removed.</li>
+--   <li><tt>Nil</tt> and <a>Cons</a> are kept as is.</li>
+--   </ul>
+reduceBuild :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceMapBuild :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceMap :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <ul>
+--   <li>Functions are reordered as:</li>
+--   <li><tt>Sort</tt> and <a>Reversed</a> (functions to reorder) are
+--   lastly applied to lists</li>
+--   <li><a>Map</a> (functions to modify lists)</li>
+--   <li><a>Filter</a> (funcitons to reduce lengths) is firstly applied to
+--   lists</li>
+--   </ul>
+reduceMapMap :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceFoldMap :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceFold :: Monad m => RewriteRule m
+reduceFoldBuild :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+
+-- | &lt;math&gt;
+module Jikka.Core.Convert.EqualitySolving
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <a>moveLiteralToRight</a> moves literals to lhs of <a>(==)</a> or
+--   <a>(/=)</a>, using symmetricity.
+moveLiteralToRight :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <a>convertGreaterToLess</a> erases <a>(&gt;)</a> and <a>(&gt;=)</a>.
+convertGreaterToLess :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <a>reduceReflexivity</a> uses reflexivity.
+reduceReflexivity :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <a>makeRightZero</a> makes RHS of integer equality/inequality zero
+--   with subtracting RHS from both sides.
+makeRightZero :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <a>reduceIntInjective</a> removes injective functions from equalities
+--   of integers.
+reduceIntInjective :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceNot :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceListCtor :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceListInjective :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+
+-- | &lt;math&gt;
+module Jikka.Core.Convert.ConstantFolding
+
+-- | <a>run</a> folds constants in given programs. For example, this
+--   converts the following:
+--   
+--   <pre>
+--   3 x + 2 + 1
+--   </pre>
+--   
+--   to the follwoing:
+--   
+--   <pre>
+--   3 x + 3
+--   </pre>
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Basic arithmetical functions</h3>
+--   
+--   <ul>
+--   <li><a>Negate</a> &lt;math&gt;</li>
+--   <li><a>Plus</a> &lt;math&gt;</li>
+--   <li><a>Minus</a> &lt;math&gt;</li>
+--   <li><a>Mult</a> &lt;math&gt;</li>
+--   <li><a>FloorDiv</a> &lt;math&gt;</li>
+--   <li><a>FloorMod</a> &lt;math&gt;</li>
+--   <li><a>CeilDiv</a> &lt;math&gt;</li>
+--   <li><a>CeilMod</a> &lt;math&gt;</li>
+--   <li><a>Pow</a> &lt;math&gt;</li>
+--   </ul>
+--   
+--   <h3>Advanced arithmetical functions</h3>
+--   
+--   <ul>
+--   <li><a>Abs</a> &lt;math&gt;</li>
+--   <li><a>Gcd</a> &lt;math&gt;</li>
+--   <li><a>Lcm</a> &lt;math&gt;</li>
+--   </ul>
+reduceConstArithmeticExpr :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Max functions</h3>
+--   
+--   <ul>
+--   <li><a>Min2</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>Max2</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   </ul>
+reduceConstMaxExpr :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Boolean functions</h3>
+--   
+--   <ul>
+--   <li><a>And</a> &lt;math&gt;</li>
+--   <li><a>Or</a> &lt;math&gt;</li>
+--   <li><a>Implies</a> &lt;math&gt;</li>
+--   </ul>
+reduceIdempotentBooleanExpr :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Boolean functions</h3>
+--   
+--   <ul>
+--   <li><a>Not</a> &lt;math&gt;</li>
+--   <li><a>And</a> &lt;math&gt;</li>
+--   <li><a>Or</a> &lt;math&gt;</li>
+--   <li><a>Implies</a> &lt;math&gt;</li>
+--   </ul>
+reduceUnitBooleanExpr :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Boolean functions</h3>
+--   
+--   <ul>
+--   <li><a>If</a> &lt;math&gt;</li>
+--   </ul>
+reduceConstBooleanExpr :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Bitwise boolean functions</h3>
+--   
+--   <ul>
+--   <li><a>BitNot</a> &lt;math&gt;</li>
+--   <li><a>BitAnd</a> &lt;math&gt;</li>
+--   <li><a>BitOr</a> &lt;math&gt;</li>
+--   <li><a>BitXor</a> &lt;math&gt;</li>
+--   <li><a>BitLeftShift</a> &lt;math&gt;</li>
+--   <li><a>BitRightShift</a> &lt;math&gt;</li>
+--   </ul>
+reduceUnitBitExpr :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Bitwise boolean functions</h3>
+--   
+--   <ul>
+--   <li><a>BitNot</a> &lt;math&gt;</li>
+--   <li><a>BitAnd</a> &lt;math&gt;</li>
+--   <li><a>BitOr</a> &lt;math&gt;</li>
+--   <li><a>BitXor</a> &lt;math&gt;</li>
+--   <li><a>BitLeftShift</a> &lt;math&gt;</li>
+--   <li><a>BitRightShift</a> &lt;math&gt;</li>
+--   </ul>
+reduceConstBitExpr :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Comparison functions</h3>
+--   
+--   <ul>
+--   <li><a>LessThan</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>LessEqual</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>GreaterThan</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>GreaterEqual</a> &lt;math&gt; (specialized to
+--   &lt;math&gt;)</li>
+--   <li><a>Equal</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>NotEqual</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   </ul>
+reduceConstIntComparison :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | <h2>List of functions which are reduced</h2>
+--   
+--   <h3>Comparison functions</h3>
+--   
+--   <ul>
+--   <li><a>LessThan</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>LessEqual</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>GreaterThan</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>GreaterEqual</a> &lt;math&gt; (specialized to
+--   &lt;math&gt;)</li>
+--   <li><a>Equal</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   <li><a>NotEqual</a> &lt;math&gt; (specialized to &lt;math&gt;)</li>
+--   </ul>
+reduceUnitBooleanComparison :: (MonadAlpha m, MonadError Error m) => RewriteRule m
 
 
 -- | &lt;math&gt;
@@ -2367,8 +3245,8 @@ module Jikka.Core.Convert.CloseSum
 --   <li><a>Sorted</a> &lt;math&gt;</li>
 --   </ul>
 run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-rule :: MonadAlpha m => RewriteRule m
-reduceSum :: MonadAlpha m => RewriteRule m
+rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceSum :: (MonadAlpha m, MonadError Error m) => RewriteRule m
 
 -- | TODO: implement this.
 reduceProduct :: Monad m => RewriteRule m
@@ -2376,10 +3254,76 @@ reduceProduct :: Monad m => RewriteRule m
 -- | <ul>
 --   <li>This assumes that <tt>ModFloor</tt> is already propagated.</li>
 --   </ul>
-reduceModSum :: MonadAlpha m => RewriteRule m
+reduceModSum :: (MonadAlpha m, MonadError Error m) => RewriteRule m
 
 -- | TODO: implement this.
 reduceModProduct :: Monad m => RewriteRule m
+
+
+module Jikka.Core.Convert.CloseMin
+
+-- | <a>run</a> reduces maximums and minimums.
+--   
+--   <h2>Examples</h2>
+--   
+--   Before:
+--   
+--   <pre>
+--   max (map (fun x -&gt; 3 + f x) xs)
+--   </pre>
+--   
+--   After:
+--   
+--   <pre>
+--   3 + max (map f xs)
+--   </pre>
+--   
+--   <h2>List of builtin functions which are reduced</h2>
+--   
+--   &lt;math&gt;
+--   
+--   <h3>Target functions</h3>
+--   
+--   <ul>
+--   <li><a>Max1</a> &lt;math&gt;</li>
+--   <li><a>Min1</a> &lt;math&gt;</li>
+--   <li><a>ArgMax</a> &lt;math&gt;</li>
+--   <li><a>ArgMin</a> &lt;math&gt;</li>
+--   </ul>
+--   
+--   <h3>Related functions</h3>
+--   
+--   <ul>
+--   <li><a>Max2</a> &lt;math&gt;</li>
+--   <li><a>Min2</a> &lt;math&gt;</li>
+--   </ul>
+--   
+--   <h3>List Build functions</h3>
+--   
+--   <ul>
+--   <li><tt>Nil</tt> &lt;math&gt;</li>
+--   <li><a>Cons</a> &lt;math&gt;</li>
+--   <li><a>Range1</a> &lt;math&gt;</li>
+--   </ul>
+--   
+--   <h3>List Map functions</h3>
+--   
+--   <ul>
+--   <li><a>Map</a> &lt;math&gt;</li>
+--   <li><a>Filter</a> &lt;math&gt;</li>
+--   <li><a>Reversed</a> &lt;math&gt;</li>
+--   <li><a>Sorted</a> &lt;math&gt;</li>
+--   </ul>
+run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
+rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceMin :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceMax :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | TODO: implement this
+reduceArgMin :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+
+-- | TODO: implement this
+reduceArgMax :: (MonadAlpha m, MonadError Error m) => RewriteRule m
 
 
 module Jikka.Core.Convert.CloseAll
@@ -2436,311 +3380,9 @@ module Jikka.Core.Convert.CloseAll
 --   <li><a>Sorted</a> &lt;math&gt;</li>
 --   </ul>
 run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-rule :: MonadAlpha m => RewriteRule m
-reduceAll :: MonadAlpha m => RewriteRule m
-reduceAny :: MonadAlpha m => RewriteRule m
-
-
-module Jikka.Core.Convert.ArithmeticalExpr
-
--- | <a>run</a> sorts arithmetical exprs.
---   
---   <h2>Examples</h2>
---   
---   Before:
---   
---   <pre>
---   1 + a * 1 + b - b
---   </pre>
---   
---   After:
---   
---   <pre>
---   a + 1
---   </pre>
-run :: MonadError Error m => Program -> m Program
-
-
-module Jikka.Core.Convert.ANormal
-
--- | <a>run</a> makes a given program A-normal form. A program is an
---   A-normal form iff assigned exprs of all let-statements are values or
---   function applications. For example, this converts the following:
---   
---   <pre>
---   (let x = 1 in x) + ((fun y -&gt; y) 1)
---   </pre>
---   
---   to:
---   
---   <pre>
---   let x = 1
---   in let f = fun y -&gt; y
---   in let z = f x
---   in z
---   </pre>
-run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-
-
--- | <a>FromCore</a> converts exprs of our core language to exprs of C++.
-module Jikka.CPlusPlus.Convert.FromCore
-run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-
-module Jikka.CPlusPlus.Convert
-run :: (MonadAlpha m, MonadError Error m) => Program -> IOFormat -> m Program
-
-module Jikka.Core.Language.Value
-data Value
-ValInt :: Integer -> Value
-ValBool :: Bool -> Value
-ValList :: Vector Value -> Value
-ValTuple :: [Value] -> Value
-ValBuiltin :: Builtin -> [Type] -> [Value] -> Value
-
--- | The <a>Env</a> may contain the <a>ValLambda</a> cyclicly.
-ValLambda :: Maybe VarName -> Env -> VarName -> Type -> Expr -> Value
-type Env = [(VarName, Value)]
-literalToValue :: MonadError Error m => Literal -> m Value
-valueToInt :: MonadError Error m => Value -> m Integer
-valueToList :: MonadError Error m => Value -> m (Vector Value)
-valueToIntList :: MonadError Error m => Value -> m [Integer]
-valueToBool :: MonadError Error m => Value -> m Bool
-valueToBoolList :: MonadError Error m => Value -> m [Bool]
-valueToTuple :: MonadError Error m => Value -> m [Value]
-valueToIntPair :: MonadError Error m => Value -> m (Integer, Integer)
-valueToVector :: MonadError Error m => Value -> m (Vector Integer)
-valueToMatrix :: MonadError Error m => Value -> m (Matrix Integer)
-valueFromVector :: Vector Integer -> Value
-valueFromMatrix :: Matrix Integer -> Value
-valueToModVector :: MonadError Error m => Integer -> Value -> m (Vector ModInt)
-valueToModMatrix :: MonadError Error m => Integer -> Value -> m (Matrix ModInt)
-valueFromModVector :: Vector ModInt -> Value
-valueFromModMatrix :: Matrix ModInt -> Value
-compareValues :: Value -> Value -> Maybe Ordering
-compareValues' :: Value -> Value -> Ordering
-minValue :: Value -> Value -> Value
-maxValue :: Value -> Value -> Value
-formatValue :: Value -> String
-readValueIO :: (MonadError Error m, MonadIO m) => IOFormat -> m ([Value], Map String Value)
-writeValueIO :: (MonadError Error m, MonadIO m) => IOFormat -> Map String Value -> Value -> m ()
-instance GHC.Read.Read Jikka.Core.Language.Value.Value
-instance GHC.Classes.Eq Jikka.Core.Language.Value.Value
-
-
--- | <a>Evaluate</a> evaluates exprs to values. Also this recognizes users'
---   inputs at once.
---   
---   The implementation assumes that all variable names don't conflict even
---   when their scopes are distinct.
-module Jikka.Core.Evaluate
-run :: (MonadAlpha m, MonadFix m, MonadError Error m) => Program -> [Value] -> m Value
-
--- | <a>callProgram</a> evaluates programs with given arguments. This
---   function assumes that given programs are ready for eager evaluation
---   (<tt>ensureEagerlyEvaluatable</tt>).
-callProgram :: (MonadFix m, MonadError Error m) => Program -> [Value] -> m Value
-data Value
-ValInt :: Integer -> Value
-ValBool :: Bool -> Value
-ValList :: Vector Value -> Value
-ValTuple :: [Value] -> Value
-ValBuiltin :: Builtin -> [Type] -> [Value] -> Value
-
--- | The <a>Env</a> may contain the <a>ValLambda</a> cyclicly.
-ValLambda :: Maybe VarName -> Env -> VarName -> Type -> Expr -> Value
-
-
-module Jikka.Core.Parse.Token
-data Operator
-Plus :: Operator
-Minus :: Operator
-Mult :: Operator
-FloorDiv :: Operator
-FloorMod :: Operator
-CeilDiv :: Operator
-CeilMod :: Operator
-Pow :: Operator
-Not :: Operator
-And :: Operator
-Or :: Operator
-Implies :: Operator
-BitNot :: Operator
-BitAnd :: Operator
-BitOr :: Operator
-BitXor :: Operator
-BitLShift :: Operator
-BitRShift :: Operator
-Min :: Operator
-Max :: Operator
-DoubleEqual :: Operator
-NotEqual :: Operator
-LessThan :: Operator
-LessEqual :: Operator
-GreaterThan :: Operator
-GreaterEqual :: Operator
-
--- | We don't have to classify tokens in detail, but it's convenient for
---   testing and debugging.
-data Token
-Ident :: String -> Token
-Int :: Integer -> Token
-Bool :: Bool -> Token
-String :: String -> Token
-Let :: Token
-Rec :: Token
-In :: Token
-If :: Token
-Then :: Token
-Else :: Token
-Fun :: Token
-Dot :: Token
-Forall :: Token
-Arrow :: Token
-Equal :: Token
-Colon :: Token
-Comma :: Token
-Underscore :: Token
-BackArrow :: Token
-At :: Token
-OpenBracket :: Token
-OpenParen :: Token
-CloseBracket :: Token
-CloseParen :: Token
-Operator :: Operator -> Token
-type Token' = WithLoc Token
-instance GHC.Read.Read Jikka.Core.Parse.Token.Operator
-instance GHC.Show.Show Jikka.Core.Parse.Token.Operator
-instance GHC.Classes.Ord Jikka.Core.Parse.Token.Operator
-instance GHC.Classes.Eq Jikka.Core.Parse.Token.Operator
-instance GHC.Read.Read Jikka.Core.Parse.Token.Token
-instance GHC.Show.Show Jikka.Core.Parse.Token.Token
-instance GHC.Classes.Ord Jikka.Core.Parse.Token.Token
-instance GHC.Classes.Eq Jikka.Core.Parse.Token.Token
-
-
--- | See also Haskell's <a>Syntax Reference</a>.
-module Jikka.Core.Parse.Happy
-runProgram :: (MonadAlpha m, MonadError Error m) => [WithLoc Token] -> m Program
-runExpr :: (MonadAlpha m, MonadError Error m) => [WithLoc Token] -> m Expr
-runType :: (MonadAlpha m, MonadError Error m) => [WithLoc Token] -> m Type
-runRule :: (MonadAlpha m, MonadError Error m) => [WithLoc Token] -> m (String, [(VarName, Type)], Expr, Expr)
-
-
-module Jikka.Core.Parse.Alex
-run :: MonadError Error m => String -> m [Token']
-instance GHC.Show.Show Jikka.Core.Parse.Alex.AlexPosn
-instance GHC.Classes.Eq Jikka.Core.Parse.Alex.AlexPosn
-instance GHC.Base.Functor Jikka.Core.Parse.Alex.Alex
-instance GHC.Base.Applicative Jikka.Core.Parse.Alex.Alex
-instance GHC.Base.Monad Jikka.Core.Parse.Alex.Alex
-
-module Jikka.Core.Parse
-run :: (MonadAlpha m, MonadError Error m) => FilePath -> Text -> m Program
-parseProgram :: (MonadAlpha m, MonadError Error m) => String -> m Program
-parseExpr :: (MonadAlpha m, MonadError Error m) => String -> m Expr
-parseType :: (MonadAlpha m, MonadError Error m) => String -> m Type
-parseRule :: (MonadAlpha m, MonadError Error m) => String -> m (String, [(VarName, Type)], Expr, Expr)
-
-module Jikka.Core.Language.QuasiRules
-liftError :: ExceptT Error Q a -> Q a
-lookupValueName :: (MonadTrans t, Monad (t Q), MonadFail (t Q)) => String -> t Q Name
-fromVarName :: VarName -> Q Name
-fromTypeName :: TypeName -> Q Name
-liftDataP :: Data a => a -> Q Pat
-data Env
-Env :: [(VarName, Maybe Exp)] -> [(TypeName, Name)] -> Env
-[vars] :: Env -> [(VarName, Maybe Exp)]
-[typeVars] :: Env -> [(TypeName, Name)]
-toPatT :: Type -> StateT Env Q Pat
-toPatL :: Literal -> StateT Env Q Pat
-toPatE :: Expr -> StateT Env Q Pat
-toExpT :: Type -> StateT Env Q Exp
-toExpL :: Literal -> StateT Env Q Exp
-toExpE :: Expr -> StateT Env Q ([Stmt], Exp)
-ruleExp :: String -> Q Exp
-r :: QuasiQuoter
-
-
--- | &lt;math&gt;
-module Jikka.Core.Convert.ShortCutFusion
-
--- | <a>run</a> does short cut fusion.
---   
---   <ul>
---   <li>This function is mainly for polymorphic reductions. This dosn't do
---   much about concrete things, e.g., arithmetical operations.</li>
---   <li>This does nothing about <a>Build</a>, <a>Scanl</a> or <a>SetAt</a>
---   except combinations with <a>Len</a> or <a>At</a>.</li>
---   </ul>
---   
---   <h2>Example</h2>
---   
---   Before:
---   
---   <pre>
---   length (map f (cons (-1) (range n)))
---   </pre>
---   
---   After:
---   
---   <pre>
---   n + 1
---   </pre>
---   
---   <h2>List of builtin functions which are reduced</h2>
---   
---   <h3>Build functions</h3>
---   
---   <ul>
---   <li><tt>Nil</tt> &lt;math&gt;</li>
---   <li><a>Cons</a> &lt;math&gt;</li>
---   <li><a>Range1</a> &lt;math&gt;</li>
---   <li><a>Range2</a> &lt;math&gt;</li>
---   <li><a>Range3</a> &lt;math&gt;</li>
---   </ul>
---   
---   <h3>Map functions</h3>
---   
---   <ul>
---   <li><a>Map</a> &lt;math&gt;</li>
---   <li><a>Filter</a> &lt;math&gt;</li>
---   <li><a>Reversed</a> &lt;math&gt;</li>
---   <li><a>Sorted</a> &lt;math&gt;</li>
---   </ul>
---   
---   <h3>Fold functions</h3>
---   
---   <ul>
---   <li><a>Foldl</a> &lt;math&gt;</li>
---   <li><a>Len</a> &lt;math&gt;</li>
---   <li><a>At</a> &lt;math&gt;</li>
---   <li><a>Elem</a> &lt;math&gt;</li>
---   </ul>
-run :: (MonadAlpha m, MonadError Error m) => Program -> m Program
-rule :: MonadAlpha m => RewriteRule m
-
--- | <ul>
---   <li><a>Range1</a> remains.</li>
---   <li><a>Range2</a> is removed.</li>
---   <li><a>Range3</a> is removed.</li>
---   <li><tt>Nil</tt> and <a>Cons</a> are kept as is.</li>
---   </ul>
-reduceBuild :: MonadAlpha m => RewriteRule m
-reduceMapBuild :: MonadAlpha m => RewriteRule m
-reduceMap :: Monad m => RewriteRule m
-
--- | <ul>
---   <li>Functions are reordered as:</li>
---   <li><tt>Sort</tt> and <a>Reversed</a> (functions to reorder) are
---   lastly applied to lists</li>
---   <li><a>Map</a> (functions to modify lists)</li>
---   <li><a>Filter</a> (funcitons to reduce lengths) is firstly applied to
---   lists</li>
---   </ul>
-reduceMapMap :: MonadAlpha m => RewriteRule m
-reduceFoldMap :: MonadAlpha m => RewriteRule m
-reduceFold :: Monad m => RewriteRule m
-reduceFoldBuild :: MonadAlpha m => RewriteRule m
+rule :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceAll :: (MonadAlpha m, MonadError Error m) => RewriteRule m
+reduceAny :: (MonadAlpha m, MonadError Error m) => RewriteRule m
 
 
 -- | <a>Convert</a> is a module to combine other all optimizers.
@@ -3191,9 +3833,9 @@ run :: MonadError Error m => FilePath -> Text -> m Program
 
 
 module Jikka.RestrictedPython.Language.Expr
-newtype TypeName
-TypeName :: String -> TypeName
-unTypeName :: TypeName -> String
+data TypeName
+TypeName :: OccName -> NameFlavour -> TypeName
+formatTypeName :: TypeName -> String
 
 -- | <a>Type</a> represents the types of our restricted Python-like
 --   language.
@@ -3418,9 +4060,9 @@ BuiltinAppend :: Type -> Attribute
 -- | "str.split" &lt;math&gt;
 BuiltinSplit :: Attribute
 type Attribute' = WithLoc' Attribute
-newtype VarName
-VarName :: String -> VarName
-unVarName :: VarName -> String
+data VarName
+VarName :: OccName -> NameFlavour -> Maybe NameHint -> VarName
+formatVarName :: VarName -> String
 type VarName' = WithLoc' VarName
 
 -- | <a>Expr</a> represents the exprs of our restricted Python-like
@@ -3488,12 +4130,10 @@ ToplevelAssert :: Expr' -> ToplevelStatement
 --   
 --   &lt;math&gt;
 type Program = [ToplevelStatement]
-instance Data.String.IsString Jikka.RestrictedPython.Language.Expr.VarName
 instance GHC.Read.Read Jikka.RestrictedPython.Language.Expr.VarName
 instance GHC.Show.Show Jikka.RestrictedPython.Language.Expr.VarName
 instance GHC.Classes.Ord Jikka.RestrictedPython.Language.Expr.VarName
 instance GHC.Classes.Eq Jikka.RestrictedPython.Language.Expr.VarName
-instance Data.String.IsString Jikka.RestrictedPython.Language.Expr.TypeName
 instance GHC.Read.Read Jikka.RestrictedPython.Language.Expr.TypeName
 instance GHC.Show.Show Jikka.RestrictedPython.Language.Expr.TypeName
 instance GHC.Classes.Ord Jikka.RestrictedPython.Language.Expr.TypeName
@@ -3543,6 +4183,8 @@ instance GHC.Read.Read Jikka.RestrictedPython.Language.Expr.ToplevelStatement
 instance GHC.Show.Show Jikka.RestrictedPython.Language.Expr.ToplevelStatement
 instance GHC.Classes.Ord Jikka.RestrictedPython.Language.Expr.ToplevelStatement
 instance GHC.Classes.Eq Jikka.RestrictedPython.Language.Expr.ToplevelStatement
+instance Data.String.IsString Jikka.RestrictedPython.Language.Expr.TypeName
+instance Data.String.IsString Jikka.RestrictedPython.Language.Expr.VarName
 
 module Jikka.RestrictedPython.Language.Util
 genType :: MonadAlpha m => m Type
@@ -3595,6 +4237,9 @@ hasBareNameTrg :: Target' -> Bool
 exprToTarget :: Expr' -> Maybe Target'
 targetToExpr :: Target' -> Expr'
 toplevelMainDef :: [Statement] -> Program
+mainVarName :: VarName
+solveVarName :: VarName
+underscoreVarName :: VarName
 
 module Jikka.RestrictedPython.Language.Builtin
 builtinNames :: Set VarName
@@ -4415,7 +5060,11 @@ run :: FilePath -> ExceptT Error IO ()
 
 
 module Jikka.Main.Subcommand.Convert
-run :: Target -> FilePath -> Text -> Either Error Text
+run :: Target -> Target -> FilePath -> Text -> Either Error Text
+instance GHC.Show.Show Jikka.Main.Subcommand.Convert.Program
+instance GHC.Read.Read Jikka.Main.Subcommand.Convert.Program
+instance GHC.Classes.Ord Jikka.Main.Subcommand.Convert.Program
+instance GHC.Classes.Eq Jikka.Main.Subcommand.Convert.Program
 
 module Jikka.RestrictedPython.Language.WithoutLoc
 constIntExp :: Integer -> Expr'
@@ -4436,6 +5085,10 @@ nameTrg :: VarName' -> Target'
 subscriptTrg :: Target' -> Expr' -> Target'
 tupleTrg :: [Target'] -> Target'
 
+module Jikka.CPlusPlus.Convert.EmbedOriginalCode
+run' :: Text -> Text
+run :: Text -> Text -> Text
+
 
 module Jikka.CPlusPlus.Convert.BundleRuntime
 
@@ -4453,12 +5106,14 @@ data Flag
 Help :: Flag
 Verbose :: Flag
 Version :: Flag
+Source :: String -> Flag
 Target :: String -> Flag
 BundleRuntimeHeaders :: Bool -> Flag
 EmbedOriginalCode :: Bool -> Flag
 data Options
-Options :: Bool -> Maybe Target -> Bool -> Bool -> Options
+Options :: Bool -> Target -> Maybe Target -> Bool -> Bool -> Options
 [verbose] :: Options -> Bool
+[source] :: Options -> Target
 [target] :: Options -> Maybe Target
 [bundleRuntimeHeaders] :: Options -> Bool
 [embedOriginalCode] :: Options -> Bool
